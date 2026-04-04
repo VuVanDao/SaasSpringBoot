@@ -13,23 +13,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class Category extends AbstractModel {
     @Column(nullable = false)
     String name;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    Store store;
+    // @ManyToOne
+    // @JoinColumn(name = "store_id", nullable = false)
+    // Store store;
     
     @ManyToMany(mappedBy = "categories")
     Set<Products> products;

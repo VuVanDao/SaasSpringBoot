@@ -2,10 +2,17 @@ package PersonalProject.demo.mapper;
 
 import PersonalProject.demo.Dto.Request.CreateProductRequest;
 import PersonalProject.demo.Dto.Request.UpdateProductRequest;
+import PersonalProject.demo.Dto.Response.CategoryResponse;
 import PersonalProject.demo.Dto.Response.ProductDto;
+import PersonalProject.demo.models.Category;
 import PersonalProject.demo.models.Products;
 import PersonalProject.demo.models.Store;
+import PersonalProject.demo.repositories.CategoryRepositories;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class ProductMapper {
 
     private final storeMapper storeMapper;
+    private final CategoryRepositories categoryRepository;
 
     public Products convertToModel(CreateProductRequest request, Store store) {
         return Products.builder()
@@ -37,13 +45,16 @@ public class ProductMapper {
         existing.setImage(request.getImage());
         existing.setMrp(request.getMrp());
         existing.setSellingPrice(request.getSellingPrice());
+        if (existing.getCategories().size() != request.getCategoryIds().length) {
+            List<Category> categories = categoryRepository.findAllById(Arrays.asList(request.getCategoryIds()));
+            existing.setCategories(new HashSet<>(categories));
+        } 
         // store not updated
         return existing;
     }
 
     public ProductDto convertToDto(Products product, Boolean includeStore) {
-        if(includeStore) {
-            return ProductDto.builder()
+        ProductDto builder  = ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .sku(product.getSku())
@@ -54,20 +65,11 @@ public class ProductMapper {
                 .sellingPrice(product.getSellingPrice())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
-                .store(storeMapper.convertToDto(product.getStore()))
+                .categories(product.getCategories().stream().map(category -> CategoryResponse.builder().name(category.getName()).build()).toList())
                 .build();
+        if (includeStore) {
+            builder.setStore(storeMapper.convertToDto(product.getStore()));
         }
-        return ProductDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .sku(product.getSku())
-                .description(product.getDescription())
-                .brand(product.getBrand())
-                .image(product.getImage())
-                .mrp(product.getMrp())
-                .sellingPrice(product.getSellingPrice())
-                .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
-                .build();
+        return builder;
     }
 }

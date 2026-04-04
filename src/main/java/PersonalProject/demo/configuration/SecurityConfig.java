@@ -28,7 +28,7 @@ public class SecurityConfig {
     
     private final ApplicationProperties _ApplicationProperties;
     private final String[] Public_Post_Endpoint = { "/auth/sign_up" ,"/auth/login"}; 
-    private final String[] Public_Get_Endpoint = { "/products/store/{storeId}" ,"/products/search" ,"/products/{id}"}; 
+    private final String[] Public_Get_Endpoint = { "/products/store/{storeId}" ,"/products/search" ,"/products/{id}","/categories" }; 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
@@ -37,10 +37,21 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, Public_Post_Endpoint).permitAll()
                     .requestMatchers(HttpMethod.GET, Public_Get_Endpoint).permitAll()
                     // .requestMatchers("/stores/**").permitAll()
-                    // .requestMatchers("/error").permitAll()
+                        // .requestMatchers("/error").permitAll()
+                        /*
+                        Khi Spring thực hiện kiểm tra quyền cho dòng .requestMatchers("/super-admin/**").hasRole("ADMIN"), nó thực hiện logic sau:
+                        Bước 1: Nó truy cập vào SecurityContextHolder để lấy đối tượng Authentication.
+                        đã được JwtValidator nạp vào trước đó. Authentication này chứa thông tin về user và danh sách GrantedAuthority (quyền) của user đó.
+                        
+                        Bước 2: Nó duyệt qua danh sách GrantedAuthority mà bạn đã nạp vào ở bước trên.
+                        
+                        Bước 3 (Quan trọng): * Nếu bạn dùng hasRole("ADMIN"): Spring sẽ tìm kiếm một Authority có tên chính xác là ROLE_ADMIN.
+                        
+                        Nếu bạn dùng hasAuthority("ADMIN"): Spring sẽ tìm kiếm một Authority có tên chính xác là ADMIN.
+                         */
                     .requestMatchers("/super-admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
-                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class);
+                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class);// chạy vào JwtValidator để validate token trước khi vào controller
             http.csrf(csrf -> csrf.disable());
             http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();

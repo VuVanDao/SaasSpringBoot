@@ -21,6 +21,7 @@ import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.services.ProductService;
 import PersonalProject.demo.services.StoreService;
 import PersonalProject.demo.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,16 +42,23 @@ public class ProductServiceImplementation implements ProductService {
         Products savedProduct = productRepository.save(products);
         return productMapper.convertToDto(savedProduct,true);
     }
+
     @Override
+    // @Transactional
     public List<ProductDto> getAllProducts() {
-        return productRepository.findAll().stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        // return productRepository.findAll().stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        return productRepository.findAllWithCategories().stream().map(product -> productMapper.convertToDto(product,false)).toList();
     }
+
     @Override
+    @Transactional
     public ProductDto getProductById(Long id) {
         Products product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return productMapper.convertToDto(product,true);
     }
+
     @Override
+    @Transactional
     public ProductDto updateProduct(Long id, UpdateProductRequest request) {
         Products existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));

@@ -25,4 +25,6 @@ public class UpdateStoreRequest {
     StoreStatus storeStatus;
 
     StoreContact storeContact;
+
+    Long branchId;
 }

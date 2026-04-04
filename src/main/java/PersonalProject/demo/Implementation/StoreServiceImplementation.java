@@ -13,8 +13,10 @@ import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.domain.StoreStatus;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.storeMapper;
+import PersonalProject.demo.models.Branch;
 import PersonalProject.demo.models.Store;
 import PersonalProject.demo.models.User;
+import PersonalProject.demo.repositories.BranchRepository;
 import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.repositories.UserRepository;
 import PersonalProject.demo.services.StoreService;
@@ -30,6 +32,7 @@ public class StoreServiceImplementation implements StoreService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final storeMapper storeMapper;
+    private final BranchRepository branchRepository;
     @Override
     public StoreDto createStore(CreateStoreRequest storeDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -74,6 +77,9 @@ public class StoreServiceImplementation implements StoreService {
             existingStore.setStoreContact(storeDto.getStoreContact());
         }
         existingStore.setStoreStatus(storeDto.getStoreStatus());
+        Branch  branch = branchRepository.findById(storeDto.getBranchId())
+                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + storeDto.getBranchId()));
+        existingStore.setBranch(branch);
         Store updatedStore = storeRepositories.save(existingStore);
         return storeMapper.convertToDto(updatedStore);
     }

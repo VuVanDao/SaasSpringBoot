@@ -8,6 +8,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
@@ -50,4 +51,9 @@ public class Store extends AbstractModel {
      */
     @OneToMany(mappedBy = "store")
     List<Products> products;
+
+    @ManyToOne
+    Branch branch;
+
+
 }

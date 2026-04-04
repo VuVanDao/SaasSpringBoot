@@ -28,6 +28,7 @@ public class UpdateProductRequest {
     @NotNull(message = "Selling price is required")
     private BigDecimal sellingPrice;
 
+    private Long[] categoryIds;
     // @NotNull(message = "Store ID is required")
     // private Long storeId;
 }

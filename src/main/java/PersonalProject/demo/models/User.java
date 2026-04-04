@@ -55,6 +55,9 @@ public class User extends AbstractModel implements UserDetails{
     // @ManyToOne
     Store store;
 
+    @OneToOne(mappedBy = "manager")
+    Branch branch;
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         GrantedAuthority authority = new SimpleGrantedAuthority(this.getRole().toString());
