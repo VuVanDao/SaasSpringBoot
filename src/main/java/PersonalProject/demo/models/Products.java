@@ -2,6 +2,7 @@ package PersonalProject.demo.models;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -18,15 +19,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SuperBuilder
+// @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class Products extends AbstractModel {
+public class Products extends AbstractTenantModel {
     @Column(nullable = false)
     String name;
     @Column(nullable = false)
@@ -37,9 +39,9 @@ public class Products extends AbstractModel {
     String brand;
     String image;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    Store store;
+    // @ManyToOne
+    // @JoinColumn(name = "store_id", nullable = false)
+    // Store store;
 
     @ManyToMany
     @JoinTable(
@@ -48,4 +50,5 @@ public class Products extends AbstractModel {
         inverseJoinColumns = @JoinColumn(name = "category_id") // Khóa ngoại trỏ đến Category
     )
     Set<Category> categories = new HashSet<>();
+
 }

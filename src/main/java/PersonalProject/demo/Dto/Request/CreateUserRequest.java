@@ -6,6 +6,7 @@ import PersonalProject.demo.domain.UserRole;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,4 +35,7 @@ public class CreateUserRequest {
     UserRole role;
     
     LocalDateTime lastLogin;
+
+    @NotNull(message = "tenant id is required")
+    Long tenantId;
 }

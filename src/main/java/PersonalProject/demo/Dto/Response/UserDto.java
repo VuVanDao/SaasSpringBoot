@@ -25,4 +25,5 @@ public class UserDto {
     UserRole role;
     LocalDateTime lastLogin;
     StoreDto store;
+    Long tenantId;
 }

@@ -16,7 +16,9 @@ import PersonalProject.demo.Dto.Response.AuthResponse;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.configuration.JwtProvider;
 import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.userMapper;
+import PersonalProject.demo.models.Tenant;
 import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.AuthRepositories;
 import PersonalProject.demo.repositories.UserRepository;
@@ -34,10 +36,10 @@ public class AuthServiceImplementation implements AuthRepositories {
     @Override
     public AuthResponse signUp(CreateUserRequest request) {
         System.out.println("-----------------AuthServiceImplementation.signUp-----------------");
-        User user = userMapper.convertToModel(request);
-        if (user.getRole() == UserRole.ROLE_ADMIN) {
+        if ((request.getRole() == UserRole.ROLE_ADMIN) || (request.getRole() == UserRole.ROLE_SUPER_ADMIN)) {
             throw new RuntimeException("User with role admin already exist");
-        } 
+        }
+        User user = userMapper.convertToModel(request);
         this.userRepository.save(user);
         /*
         Dòng code này giống như việc bạn tạo ra một chiếc "Thẻ tạm trú" cho người dùng sau khi họ đã xuất trình đúng giấy tờ.

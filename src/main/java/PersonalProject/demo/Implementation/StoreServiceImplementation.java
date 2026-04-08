@@ -1,5 +1,7 @@
 package PersonalProject.demo.Implementation;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,13 +16,16 @@ import PersonalProject.demo.domain.StoreStatus;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.storeMapper;
 import PersonalProject.demo.models.Branch;
+import PersonalProject.demo.models.Category;
 import PersonalProject.demo.models.Store;
 import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.BranchRepository;
+import PersonalProject.demo.repositories.CategoryRepositories;
 import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.repositories.UserRepository;
 import PersonalProject.demo.services.StoreService;
 import PersonalProject.demo.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +38,7 @@ public class StoreServiceImplementation implements StoreService {
     private final UserService userService;
     private final storeMapper storeMapper;
     private final BranchRepository branchRepository;
+    private final CategoryRepositories categoryRepositories;
     @Override
     public StoreDto createStore(CreateStoreRequest storeDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -55,10 +61,12 @@ public class StoreServiceImplementation implements StoreService {
     }
 
     @Override
+    @Transactional
     public StoreDto getStoreByAdmin() {
         UserDto currentUser = userService.getCurrentUser();
         System.out.println("User ID: " + currentUser.getId());
-        Store store = storeRepositories.findByStoreAdminId(currentUser.getId());
+        // Store store = storeRepositories.findByStoreAdminId(currentUser.getId());
+        Store store = storeRepositories.findIncludeCategory(currentUser.getId());
         if (store == null) {
             throw new ResourceNotFoundException("Store not found for the current admin");
         }
@@ -77,9 +85,12 @@ public class StoreServiceImplementation implements StoreService {
             existingStore.setStoreContact(storeDto.getStoreContact());
         }
         existingStore.setStoreStatus(storeDto.getStoreStatus());
-        Branch  branch = branchRepository.findById(storeDto.getBranchId())
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + storeDto.getBranchId()));
-        existingStore.setBranch(branch);
+        List<Branch> branches = branchRepository.findAllById(storeDto.getBranchIds());
+        existingStore.setBranches(branches);
+        if(storeDto.getCategoryIds().size() > 0) {
+            List<Category> categories = categoryRepositories.findAllById(storeDto.getCategoryIds());
+            existingStore.setCategories(new HashSet<>(categories));
+        }
         Store updatedStore = storeRepositories.save(existingStore);
         return storeMapper.convertToDto(updatedStore);
     }

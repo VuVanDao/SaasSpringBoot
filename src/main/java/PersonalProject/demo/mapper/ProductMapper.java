@@ -32,7 +32,7 @@ public class ProductMapper {
                 .image(request.getImage())
                 .mrp(request.getMrp())
                 .sellingPrice(request.getSellingPrice())
-                .store(store)
+                // .store(store)
                 .build();
     }
 
@@ -67,9 +67,9 @@ public class ProductMapper {
                 .updatedAt(product.getUpdatedAt())
                 .categories(product.getCategories().stream().map(category -> CategoryResponse.builder().name(category.getName()).build()).toList())
                 .build();
-        if (includeStore) {
-            builder.setStore(storeMapper.convertToDto(product.getStore()));
-        }
+        // if (includeStore) {
+        //     builder.setStore(storeMapper.convertToDto(product.getStore()));
+        // }
         return builder;
     }
 }

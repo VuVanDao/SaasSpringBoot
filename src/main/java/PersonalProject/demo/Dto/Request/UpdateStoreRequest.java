@@ -1,5 +1,7 @@
 package PersonalProject.demo.Dto.Request;
 
+import java.util.List;
+
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.domain.StoreContact;
 import PersonalProject.demo.domain.StoreStatus;
@@ -26,5 +28,7 @@ public class UpdateStoreRequest {
 
     StoreContact storeContact;
 
-    Long branchId;
+    List<Long> branchIds;
+
+    List<Long> categoryIds;
 }

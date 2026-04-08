@@ -19,21 +19,22 @@ import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
+@Data
 @Entity
-@Getter
-@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SuperBuilder
+// @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@Builder
-public class User extends AbstractModel implements UserDetails{
+public class User extends AbstractTenantModel implements UserDetails{
     String fullName;
 
     @Column(nullable = false, unique = true)
@@ -58,6 +59,9 @@ public class User extends AbstractModel implements UserDetails{
     @OneToOne(mappedBy = "manager")
     Branch branch;
     
+    @OneToOne(mappedBy = "user")
+    Employee employee;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         GrantedAuthority authority = new SimpleGrantedAuthority(this.getRole().toString());

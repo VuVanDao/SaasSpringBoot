@@ -18,5 +18,5 @@ public interface BranchService {
 
     void deleteBranch(Long id);
 
-    List<StoreDto> getAllStoresByBranchId(Long branchId);
+    // List<StoreDto> getAllStoresByBranchId(Long branchId);
 }

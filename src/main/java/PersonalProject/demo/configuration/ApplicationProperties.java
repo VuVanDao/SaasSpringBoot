@@ -23,4 +23,5 @@ public class ApplicationProperties {
     private String vapidPublicKey;
     private String vapidPrivateKey;
     private String vapidSubject;
+    private String headerTenant;
 }

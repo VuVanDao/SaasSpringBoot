@@ -1,5 +1,7 @@
 package PersonalProject.demo.Dto.Request;
 
+import java.util.List;
+
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.domain.StoreContact;
@@ -26,4 +28,6 @@ public class CreateStoreRequest {
     StoreStatus storeStatus;
 
     StoreContact storeContact;
+
+    List<Long> branchIds;
 }

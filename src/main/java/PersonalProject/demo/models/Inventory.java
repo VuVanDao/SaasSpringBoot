@@ -1,19 +1,16 @@
 package PersonalProject.demo.models;
 
 import java.util.List;
-import java.util.Set;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,19 +24,10 @@ import lombok.experimental.SuperBuilder;
 // @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends AbstractModel {
-    @Column(nullable = false)
-    String name;
-    
-    @ManyToMany(mappedBy = "categories")
-    Set<Products> products;
+public class Inventory extends AbstractTenantModel {
 
-    @ManyToMany(mappedBy = "categories")
-    List<Store> stores;
+    @ManyToOne
+    Branch branch;
 
-    @Column(name = "tenant_id") // Cho phép null
-    Long tenantId;
-
-    @Column(name = "is_system_default")
-    boolean isSystemDefault = false;
+    String inventoryName;
 }

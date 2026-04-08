@@ -62,7 +62,7 @@ public class ProductServiceImplementation implements ProductService {
     public ProductDto updateProduct(Long id, UpdateProductRequest request) {
         Products existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        if (existingProduct.getStore().getId() != userService.getCurrentUser().getStore().getId()) {
+        if (existingProduct.getTenantId() != userService.getCurrentUser().getTenantId()) {
             throw new ResourceNotFoundException("Product with id: " + id + " not found in your store");
         }
         existingProduct = productMapper.convertToModel(request, existingProduct);
@@ -73,7 +73,7 @@ public class ProductServiceImplementation implements ProductService {
     public void deleteProduct(Long id) {
         Products existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        if (existingProduct.getStore().getId() != userService.getCurrentUser().getStore().getId()) {
+        if (existingProduct.getTenantId() != userService.getCurrentUser().getTenantId()) {
             throw new ResourceNotFoundException("Product with id: " + id + " not found in your store");
         }
         productRepository.delete(existingProduct);
@@ -83,13 +83,15 @@ public class ProductServiceImplementation implements ProductService {
         // if(userService.getCurrentUser().getStore().getId() != storeId) {
         //     throw new ResourceNotFoundException("Store with id: " + storeId + " is not your store");
         // }
-        List<Products> products = productRepository.findByStoreId(storeId);
-        return products.stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        // List<Products> products = productRepository.findByStoreId(storeId);
+        // return products.stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        return null;
     }
     @Override
     public List<ProductDto> searchProducts(Long storeId, String query) {
-        List<Products> products = productRepository.searchByQuery(storeId, query);
-        return products.stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        // List<Products> products = productRepository.searchByQuery(storeId, query);
+        // return products.stream().map(product -> productMapper.convertToDto(product,false)).toList();
+        return null;
     }
 
 

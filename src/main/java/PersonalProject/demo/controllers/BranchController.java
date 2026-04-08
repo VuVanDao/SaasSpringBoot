@@ -75,13 +75,13 @@ public class BranchController {
                 .build();
     }
 
-    @GetMapping("/{id}/stores")
-    public ApiResponse<List<StoreDto>> getAllStoresByBranchId(@PathVariable Long id) {
-        List<StoreDto> stores = branchService.getAllStoresByBranchId(id);
-        return ApiResponse.<List<StoreDto>>builder()
-                .code(HttpStatus.OK.value())
-                .result(stores)
-                .message("Stores by branch retrieved successfully")
-                .build();
-    }
+    // @GetMapping("/{id}/stores")
+    // public ApiResponse<List<StoreDto>> getAllStoresByBranchId(@PathVariable Long id) {
+    //     List<StoreDto> stores = branchService.getAllStoresByBranchId(id);
+    //     return ApiResponse.<List<StoreDto>>builder()
+    //             .code(HttpStatus.OK.value())
+    //             .result(stores)
+    //             .message("Stores by branch retrieved successfully")
+    //             .build();
+    // }
 }

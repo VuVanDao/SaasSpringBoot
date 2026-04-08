@@ -85,13 +85,13 @@ public class BranchServiceImplementation implements BranchService {
         branchRepository.delete(branch);
     }
 
-    @Override
-    public List<StoreDto> getAllStoresByBranchId(Long branchId) {
-        Branch branch = branchRepository.findById(branchId)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + branchId));
+    // @Override
+    // public List<StoreDto> getAllStoresByBranchId(Long branchId) {
+    //     Branch branch = branchRepository.findById(branchId)
+    //             .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + branchId));
 
-        return storeRepositories.findByBranchId(branch.getId()).stream()
-                .map(storeMapper::convertToDto)
-                .toList();
-    }
+    //     return storeRepositories.findByBranchId(branch.getId()).stream()
+    //             .map(storeMapper::convertToDto)
+    //             .toList();
+    // }
 }
