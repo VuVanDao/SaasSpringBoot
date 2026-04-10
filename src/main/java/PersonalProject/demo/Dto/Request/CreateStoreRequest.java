@@ -18,16 +18,13 @@ import lombok.NoArgsConstructor;
 public class CreateStoreRequest {
     String brand;
 
-    UserDto storeAdmin;
-    // List<UserDto> storeAdmin;
-
     String description;
-
-    String storeType;
     
     StoreStatus storeStatus;
 
     StoreContact storeContact;
 
     List<Long> branchIds;
+
+    Long tenantId;
 }

@@ -10,6 +10,7 @@ import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.configuration.JwtConstant;
 import PersonalProject.demo.domain.StoreStatus;
 import PersonalProject.demo.services.StoreService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class StoreController {
     private final String HeaderKey = JwtConstant.JWT_HEADER;
 
     @PostMapping
-    public ApiResponse<StoreDto> createStore(@RequestBody CreateStoreRequest request) {
-        StoreDto storeDto = storeService.createStore(request);
+    public ApiResponse<StoreDto> createStore(@RequestBody CreateStoreRequest request,HttpServletRequest request2) {
+        StoreDto storeDto = storeService.createStore(request, request2);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(storeDto)
@@ -49,8 +50,8 @@ public class StoreController {
     }
 
     @GetMapping
-    public ApiResponse<List<StoreDto>> getAllStores() {
-        List<StoreDto> stores = storeService.getAllStores();
+    public ApiResponse<List<StoreDto>> getAllStores(HttpServletRequest request) {
+        List<StoreDto> stores = storeService.getAllStores(request);
         return ApiResponse.<List<StoreDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(stores)
@@ -68,8 +69,8 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<StoreDto> updateStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeDto) {
-        StoreDto updatedStore = storeService.updateStore(id, storeDto);
+    public ApiResponse<StoreDto> updateStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeDto,  HttpServletRequest request) {
+        StoreDto updatedStore = storeService.updateStore(id, storeDto, request);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(updatedStore)
@@ -77,8 +78,8 @@ public class StoreController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteStore(@PathVariable Long id) {
-        storeService.deleteStore(id);
+    public ApiResponse<String> deleteStore(@PathVariable Long id, HttpServletRequest request) {
+        storeService.deleteStore(id, request);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .result("Store deleted successfully")
@@ -86,9 +87,9 @@ public class StoreController {
     }
 
     @GetMapping("/employee")
-    public ApiResponse<StoreDto> getStoreByEmployee(@RequestHeader(HeaderKey) String jwt) {
+    public ApiResponse<StoreDto> getStoreByEmployee(@RequestHeader(HeaderKey) String jwt, HttpServletRequest request) {
         // Assuming the service uses the current user from JWT
-        StoreDto storeDto = storeService.getStoreByEmployee();
+        StoreDto storeDto = storeService.getStoreByEmployee(request);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)
@@ -96,8 +97,8 @@ public class StoreController {
     }
 
     @PutMapping("/update_status/{id}")
-    public ApiResponse<StoreDto> updateStatusStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeStatus) {
-        StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus());
+    public ApiResponse<StoreDto> updateStatusStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeStatus, HttpServletRequest request) {
+        StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus(), request);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(updatedStore)

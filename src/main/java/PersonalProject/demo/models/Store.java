@@ -38,8 +38,6 @@ public class Store extends AbstractTenantModel {
     User storeAdmin;
 
     String description;
-
-    String storeType;
     
     @Enumerated(EnumType.STRING)
     StoreStatus storeStatus;

@@ -16,4 +16,6 @@ public interface StoreRepositories extends JpaRepository<Store, Long> {
 
     Store findByStoreAdminId(Long adminId);
 
+    @Query("SELECT s FROM Store s WHERE s.tenantId = :tenantId")
+    List<Store> findAllStore(Long tenantId);
 }

@@ -20,21 +20,25 @@ public class storeMapper {
     private final BranchMapper branchMapper;
 
     public StoreDto convertToDto(Store store) {
-        return StoreDto.builder()
+        StoreDto storeDto = StoreDto.builder()
                 .id(store.getId())
                 .brand(store.getBrand())
                 .description(store.getDescription())
                 .storeAdmin(userMapper.convertToDto(store.getStoreAdmin()))
                 // .storeAdmin(store.getStoreAdmin().stream().map(userMapper::convertToDto).toList())
                 .storeContact(store.getStoreContact())
-                .storeType(store.getStoreType())
                 .storeStatus(store.getStoreStatus())
-                .categories(store.getCategories().stream().map(category -> CategoryResponse.builder()
-                        .id(category.getId())
-                        .name(category.getName())
-                        .build()).collect(Collectors.toSet()))
-                .branches(store.getBranches().stream().map(branchMapper::convertToDto).collect(Collectors.toList()))
                 .build();
+        if (storeDto.getCategories() != null) {
+            storeDto.setCategories(store.getCategories().stream().map(category -> CategoryResponse.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .build()).collect(Collectors.toSet()));
+        }
+        if (storeDto.getBranches() != null) {
+            storeDto.setBranches(store.getBranches().stream().map(branchMapper::convertToDto).collect(Collectors.toList()));
+        }
+        return storeDto;
     }
     // public Store convertToModel(CreateStoreRequest storeDto, UserDto userDto) {
     public Store convertToModel(CreateStoreRequest storeDto, User user) {
@@ -44,8 +48,8 @@ public class storeMapper {
                 // .storeAdmin(userMapper.convertDtoToModel(userDto))
                 .storeAdmin(user)
                 .storeContact(storeDto.getStoreContact())
-                .storeType(storeDto.getStoreType())
                 .storeStatus(storeDto.getStoreStatus())
+                .tenantId(storeDto.getTenantId())
                 .build();
     }
 }
