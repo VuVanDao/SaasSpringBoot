@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import PersonalProject.demo.Dto.Response.ApiResponse;
+import PersonalProject.demo.domain.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
@@ -60,10 +62,20 @@ public class GlobalException {
     }
     // 5. missing servlet request parameter
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    ResponseEntity<ApiResponse> handlingMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+    ResponseEntity<ApiResponse> handlingMissingServletRequestParameterException(
+            MissingServletRequestParameterException ex) {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setMessage(ex.getMessage());
         apiResponse.setCode(404);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+    
+    @ExceptionHandler(value = BadCredentialsException.class)
+    ResponseEntity<ApiResponse> handlingBadCredentialsException(BadCredentialsException ex) {
+        ApiResponse apiResponse = new ApiResponse<>();
+        ErrorCode errorCode = ErrorCode.BadCredentialsException;
+        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setCode(errorCode.getCode());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
     }
 }
