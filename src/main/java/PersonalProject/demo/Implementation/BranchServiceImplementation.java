@@ -8,6 +8,7 @@ import PersonalProject.demo.Dto.Request.CreateBranchRequest;
 import PersonalProject.demo.Dto.Request.UpdateBranchRequest;
 import PersonalProject.demo.Dto.Response.BranchDto;
 import PersonalProject.demo.Dto.Response.StoreDto;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.BranchMapper;
 import PersonalProject.demo.mapper.storeMapper;
@@ -34,7 +35,7 @@ public class BranchServiceImplementation implements BranchService {
         User manager = null;
         if (request.getManagerId() != null) {
             manager = userRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with id: " + request.getManagerId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
         }
 
         Branch branch = branchMapper.convertToModel(request, manager);
@@ -45,7 +46,7 @@ public class BranchServiceImplementation implements BranchService {
     @Override
     public BranchDto getBranchById(Long id) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return branchMapper.convertToDto(branch);
     }
 
@@ -59,12 +60,12 @@ public class BranchServiceImplementation implements BranchService {
     @Override
     public BranchDto updateBranch(Long id, UpdateBranchRequest request) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
 
         User manager = null;
         if (request.getManagerId() != null) {
             manager = userRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with id: " + request.getManagerId()));
+                    .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         }
 
         branchMapper.convertToModel(request, branch, manager);
@@ -76,7 +77,7 @@ public class BranchServiceImplementation implements BranchService {
     @Transactional
     public void deleteBranch(Long id) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (branch.getManager() != null) {
             branch.getManager().setBranch(null);
             userRepository.save(branch.getManager());

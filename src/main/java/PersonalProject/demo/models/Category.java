@@ -20,7 +20,8 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@Setter
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
@@ -37,9 +38,9 @@ public class Category extends AbstractModel {
     @ManyToMany(mappedBy = "categories")
     List<Store> stores;
 
-    @Column(name = "tenant_id") // Cho phép null
+    @Column(name = "tenant_id",nullable = true) // Cho phép null
     Long tenantId;
 
     @Column(name = "is_system_default")
-    boolean isSystemDefault = false;
+    Boolean isSystemDefault = false;// false: category public, true: cate của riêng từng store, dùng store or tenantId để lấy
 }

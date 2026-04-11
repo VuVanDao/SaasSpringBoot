@@ -8,4 +8,5 @@ import lombok.Data;
 public class CategoryResponse {
     Long id;
     String name;
+    Boolean isSystemDefault;
 }

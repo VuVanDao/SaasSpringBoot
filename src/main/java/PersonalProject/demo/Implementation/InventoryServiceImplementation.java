@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import PersonalProject.demo.Dto.Request.CreateInventoryRequest;
 import PersonalProject.demo.Dto.Request.UpdateInventoryRequest;
 import PersonalProject.demo.Dto.Response.InventoryDto;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.BranchMapper;
 import PersonalProject.demo.mapper.ProductMapper;
@@ -34,7 +35,7 @@ public class InventoryServiceImplementation implements InventoryService {
     @Transactional
     public InventoryDto createInventory(CreateInventoryRequest request) {
         Branch branch = branchRepository.findById(request.getBranchId())
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found"));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
 
         Inventory inventory = Inventory.builder()
                 .branch(branch)
@@ -55,9 +56,9 @@ public class InventoryServiceImplementation implements InventoryService {
     @Transactional
     public InventoryDto updateInventory(Long id, UpdateInventoryRequest request) {
         Inventory inventory = inventoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
+                .orElseThrow(() ->new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         inventory.setBranch(branchRepository.findById(request.getBranchId())
-                .orElseThrow(() -> new ResourceNotFoundException("Branch not found")));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found))));
         Inventory updated = inventoryRepository.save(inventory);
         return InventoryDto.builder()
                 .id(updated.getId())
@@ -71,7 +72,7 @@ public class InventoryServiceImplementation implements InventoryService {
     @Override
     public void deleteInventory(Long id) {
         Inventory inventory = inventoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
+                .orElseThrow(() ->new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         inventoryRepository.delete(inventory);
     }
 
@@ -79,7 +80,7 @@ public class InventoryServiceImplementation implements InventoryService {
     @Transactional
     public InventoryDto getInventoryById(Long id) {
         Inventory inventory = inventoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
+                .orElseThrow(() ->new ResourceNotFoundException((ErrorCode.Resource_not_found)));
           return InventoryDto.builder()
                 .id(inventory.getId())
                 .branch(branchMapper.convertToDto(inventory.getBranch()))

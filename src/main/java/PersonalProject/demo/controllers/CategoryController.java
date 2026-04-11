@@ -7,6 +7,7 @@ import PersonalProject.demo.Dto.Request.CreateCategoryRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.CategoryResponse;
 import PersonalProject.demo.services.CategoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,17 +28,17 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ApiResponse<CategoryResponse> createNewCategory(@RequestBody CreateCategoryRequest request) {
-        CategoryResponse categoryResponse = categoryService.createCategory(request.getName());
+    public ApiResponse<CategoryResponse> createNewCategory(@RequestBody CreateCategoryRequest request,HttpServletRequest request2) {
+        CategoryResponse categoryResponse = categoryService.createCategory(request, request2);
         return ApiResponse.<CategoryResponse>builder()
             .result(categoryResponse)
             .message("Category created successfully")
             .build();
     }
     @GetMapping
-    public ApiResponse<List<CategoryResponse>> getMethodName() {
+    public ApiResponse<List<CategoryResponse>> getAllCate(HttpServletRequest request) {
         return ApiResponse.<List<CategoryResponse>>builder()
-            .result(categoryService.getAllCategories())
+            .result(categoryService.getAllCategories(request))
             .message("Categories retrieved successfully")
             .build();
     }

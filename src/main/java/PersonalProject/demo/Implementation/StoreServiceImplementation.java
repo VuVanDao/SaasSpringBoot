@@ -15,6 +15,7 @@ import PersonalProject.demo.Dto.Request.UpdateStoreRequest;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.configuration.ApplicationProperties;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.domain.StoreStatus;
 import PersonalProject.demo.domain.UserRole;
 import PersonalProject.demo.exception.ResourceNotFoundException;
@@ -69,7 +70,7 @@ public class StoreServiceImplementation implements StoreService {
 
     @Override
     public StoreDto getStoreById(Long id) {
-        Store store = storeRepositories.findById(id).orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+        Store store = storeRepositories.findById(id).orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return storeMapper.convertToDto(store);
     }
 
@@ -93,7 +94,7 @@ public class StoreServiceImplementation implements StoreService {
         // Store store = storeRepositories.findByStoreAdminId(currentUser.getId());
         Store store = storeRepositories.findIncludeCategory(currentUser.getId());
         if (store == null) {
-            throw new ResourceNotFoundException("Store not found for the current admin");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         return storeMapper.convertToDto(store);
     }
@@ -106,7 +107,7 @@ public class StoreServiceImplementation implements StoreService {
             throw new RuntimeException("Missing tenant");
         }
         Store existingStore = storeRepositories.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (existingStore.getTenantId() != tenantId) {
             throw new RuntimeException("You have not permission to update this store");
         }
@@ -137,7 +138,7 @@ public class StoreServiceImplementation implements StoreService {
             throw new RuntimeException("Missing tenant");
         }
         Store existingStore = storeRepositories.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (tenantId != existingStore.getTenantId()) {
             throw new RuntimeException("you dont have permission to delete this store");
         }
@@ -156,7 +157,7 @@ public class StoreServiceImplementation implements StoreService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email); 
         if (user.getStore() == null) {
-            throw new ResourceNotFoundException("Store not found for the current employee");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         
         return StoreDto.builder()
@@ -180,7 +181,7 @@ public class StoreServiceImplementation implements StoreService {
             throw new RuntimeException("Missing tenant");
         }
         Store existingStore = storeRepositories.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (existingStore.getTenantId() != tenantId) {
             throw new RuntimeException("you dont have permission to moderateStore");
         }

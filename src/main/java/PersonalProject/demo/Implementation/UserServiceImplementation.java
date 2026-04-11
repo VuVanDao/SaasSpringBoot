@@ -9,6 +9,7 @@ import PersonalProject.demo.Dto.Request.UpdateProfileRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.configuration.ApplicationProperties;
 import PersonalProject.demo.configuration.JwtProvider;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.storeMapper;
 import PersonalProject.demo.models.User;
@@ -34,7 +35,7 @@ public class UserServiceImplementation implements UserService {
         String email = jwtProvider.GetEmailFromToken(token.substring(7));
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         return UserDto.builder()
                 .id(user.getId())
@@ -51,25 +52,28 @@ public class UserServiceImplementation implements UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
-        return UserDto.builder()
+        UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .lastLogin(user.getLastLogin())
                 .phone(user.getPhone())
                 .role(user.getRole())
-                .store(storeMapper.convertToDto(user.getStore()))
                 .tenantId(user.getTenantId())
                 .build();
+        if (user.getStore() != null) {
+            userDto.setStore(storeMapper.convertToDto(user.getStore()));
+        }
+        return userDto;
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         return UserDto.builder()
                 .id(user.getId())
@@ -85,7 +89,7 @@ public class UserServiceImplementation implements UserService {
     public UserDto getUserById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         return UserDto.builder()
                 .id(user.getId())
@@ -125,7 +129,7 @@ public class UserServiceImplementation implements UserService {
             throw new RuntimeException("Missing tenant");
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found user with id " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (user.getTenantId() != tenantId) {
             throw new RuntimeException(
                     "You have not permission to update this user, " + user.getFullName() + " is not your staff");

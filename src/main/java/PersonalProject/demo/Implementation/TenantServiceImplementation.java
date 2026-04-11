@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import PersonalProject.demo.Dto.Request.CreateTenantRequest;
 import PersonalProject.demo.Dto.Response.TenantDto;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.TenantMapper;
 import PersonalProject.demo.models.Tenant;
@@ -27,7 +28,7 @@ public class TenantServiceImplementation implements TenantService {
 
     @Override
     public TenantDto getTenantById(Long tenantId) {
-        return tenantMapper.toDto(tenantRepository.findById(tenantId).orElseThrow(()-> new ResourceNotFoundException("Not found tenant with id "+ tenantId)));
+        return tenantMapper.toDto(tenantRepository.findById(tenantId).orElseThrow(()-> new ResourceNotFoundException((ErrorCode.Resource_not_found))));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class TenantServiceImplementation implements TenantService {
     @Override
     public TenantDto updateTenant(Long tenantId, CreateTenantRequest request) {
         Tenant tenant = tenantRepository.findById(tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found tenant with id " + tenantId));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         tenant.setDomain(request.getDomain());
         tenant.setName(request.getName());
         tenant.setStatus(request.getStatus());
@@ -52,7 +53,7 @@ public class TenantServiceImplementation implements TenantService {
     @Override
     public void deleteTenant(Long tenantId) {
         Tenant tenant = tenantRepository.findById(tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found tenant with id " + tenantId));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         tenantRepository.delete(tenant);
     }
     

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import PersonalProject.demo.Dto.Request.CreateUserRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.domain.UserRole;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.models.Tenant;
@@ -26,7 +27,7 @@ public class userMapper {
             role = request.getRole();
         }
         tenantRepository.findById(request.getTenantId())
-                .orElseThrow(() -> new ResourceNotFoundException("Not found tenant " + request.getTenantId()));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return User.builder()
                 .email(request.getEmail())
                 .fullName(request.getFullName())

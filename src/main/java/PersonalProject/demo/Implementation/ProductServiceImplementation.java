@@ -12,6 +12,7 @@ import PersonalProject.demo.Dto.Request.UpdateProductRequest;
 import PersonalProject.demo.Dto.Response.ProductDto;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.ProductMapper;
 import PersonalProject.demo.models.Products;
@@ -37,7 +38,7 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public ProductDto createProduct(CreateProductRequest request) {
         UserDto currentUser = userService.getCurrentUser();
-        Store store = storeRepositories.findById(currentUser.getStore().getId()).orElseThrow(() -> new ResourceNotFoundException("Store not found with id: " + currentUser.getStore().getId()));
+        Store store = storeRepositories.findById(currentUser.getStore().getId()).orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         Products products = productMapper.convertToModel(request, store); // store sẽ được set sau khi lấy từ DB
         Products savedProduct = productRepository.save(products);
         return productMapper.convertToDto(savedProduct,true);
@@ -53,7 +54,7 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     @Transactional
     public ProductDto getProductById(Long id) {
-        Products product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        Products product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return productMapper.convertToDto(product,true);
     }
 
@@ -61,9 +62,9 @@ public class ProductServiceImplementation implements ProductService {
     @Transactional
     public ProductDto updateProduct(Long id, UpdateProductRequest request) {
         Products existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (existingProduct.getTenantId() != userService.getCurrentUser().getTenantId()) {
-            throw new ResourceNotFoundException("Product with id: " + id + " not found in your store");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         existingProduct = productMapper.convertToModel(request, existingProduct);
         Products updatedProduct = productRepository.save(existingProduct);
@@ -72,9 +73,9 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         Products existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (existingProduct.getTenantId() != userService.getCurrentUser().getTenantId()) {
-            throw new ResourceNotFoundException("Product with id: " + id + " not found in your store");
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
         }
         productRepository.delete(existingProduct);
     }

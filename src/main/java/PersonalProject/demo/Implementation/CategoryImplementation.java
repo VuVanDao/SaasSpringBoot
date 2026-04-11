@@ -1,35 +1,129 @@
 package PersonalProject.demo.Implementation;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import PersonalProject.demo.Dto.Request.CreateCategoryRequest;
 import PersonalProject.demo.Dto.Response.CategoryResponse;
+import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.configuration.ApplicationProperties;
+import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.models.Category;
+import PersonalProject.demo.models.Store;
+import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.CategoryRepositories;
+import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.services.CategoryService;
+import PersonalProject.demo.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryImplementation implements CategoryService {
     private final CategoryRepositories categoryRepositories;
-    
-    @PreAuthorize("hasRole('ADMIN')")
+    private final ApplicationProperties applicationProperties;
+    private final StoreRepositories storeRepositories;
+    private final UserService userService;
+
     @Override
-    public CategoryResponse createCategory(String name) {
-        Category newCategory = Category.builder().name(name).build();
-        categoryRepositories.save(newCategory);
-        return CategoryResponse.builder().name(name).build();
+    @Transactional
+    public CategoryResponse createCategory(CreateCategoryRequest request, HttpServletRequest request2) {
+        System.out.println("-------------------CategoryImplementation.createCategory-------------------------");
+        Long tenantId = Long.valueOf(request2.getHeader(applicationProperties.getHeaderTenant()));
+        UserDto user = userService.getCurrentUser();
+
+        if (user.getTenantId() != tenantId) {
+            throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+        }
+        // chia luồng: admin tạo cate public và store manager tạo 
+        // 1. do admin tạo , tenant = 1 thuwfong laf do admin
+        if (tenantId == 1) {
+            System.out.println("-------------------luồng 1-------------------");
+            Category newCategory = Category.builder().name(request.getName())
+                    .tenantId(tenantId)
+                    .isSystemDefault(request.getIsSystemDefault()).build();
+            categoryRepositories.save(newCategory);
+            return CategoryResponse.builder().name(newCategory.getName()).id(newCategory.getId()).isSystemDefault(newCategory.getIsSystemDefault()).build();
+        } else {
+            System.out.println("-------------------luồng 2-------------------");
+            // 2. do store admin tạo, lúc này cần check kĩ hơn
+            // do của store admin tạo nên nó chỉ thuộc về store đó
+            if (request.getStoreId().size() > 1) {
+                throw new RuntimeException("Error when create category");
+            }
+            // tìm store
+            List<Store> stores = storeRepositories.findAllById(request.getStoreId());
+            
+            if (stores != null && stores.size() > 0) {
+                if (stores.get(0).getTenantId() != tenantId || user.getTenantId() != stores.get(0).getTenantId()) {
+                    throw new AuthorizationDeniedException(ErrorCode.AuthorizationDeniedException.getMessage());
+                }
+            }
+            Category newCategory = Category.builder().name(request.getName()).tenantId(tenantId)
+                    .isSystemDefault(request.getIsSystemDefault()).build();
+            categoryRepositories.save(newCategory);
+
+            // Thiết lập mối quan hệ với stores
+            if (stores != null && !stores.isEmpty()) {
+                newCategory.setStores(stores);
+                
+                // Cập nhật mối quan hệ từ phía Store
+                for (Store store : stores) {
+                    if (store.getCategories() == null) {
+                        store.setCategories(new HashSet<>());
+                    }
+                    store.getCategories().add(newCategory);
+                    
+                    // Cập nhật lại store
+                    storeRepositories.save(store);
+                }
+            }
+            return CategoryResponse.builder()
+                .name(newCategory.getName())
+                .id(newCategory.getId())
+                .isSystemDefault(newCategory.getIsSystemDefault())
+                .build();
+        }
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories() {
+    public List<CategoryResponse> getAllCategories(HttpServletRequest request) {
+
+        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        UserDto user = userService.getCurrentUser();
+
+        if (user.getTenantId() != tenantId) {
+            throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+        }
+        System.out.println("------------------USER LOGIN________"+user);
+        if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
+            // Nếu là store admin, lấy cả categories công khai và categories của store riêng
+            // Lấy theo tenantId để tối ưu hiệu năng
+            return categoryRepositories.findAllByTenantIdOrIsSystemDefaultTrue(tenantId).stream()
+                .map(category -> CategoryResponse.builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .isSystemDefault(category.getIsSystemDefault())
+                    .build())
+                .toList();
+        }
+          // Nếu là admin, lấy tất cả categories
         return categoryRepositories.findAll().stream()
             .map(category -> CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .isSystemDefault(category.getIsSystemDefault())
                 .build())
             .toList();
     }
