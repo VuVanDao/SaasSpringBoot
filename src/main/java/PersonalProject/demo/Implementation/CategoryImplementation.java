@@ -64,9 +64,14 @@ public class CategoryImplementation implements CategoryService {
             }
             // tìm store
             List<Store> stores = storeRepositories.findAllById(request.getStoreId());
-            
+            // truwong hop ko tim thay store
+            if (stores == null || stores.size() == 0) {
+                throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
+            }
+            // truong hop store tenantID ko trung tenantID
             if (stores != null && stores.size() > 0) {
-                if (stores.get(0).getTenantId() != tenantId || user.getTenantId() != stores.get(0).getTenantId()) {
+                Long StoreTenantId = stores.get(0).getTenantId();
+                if (StoreTenantId != tenantId || user.getTenantId() != StoreTenantId) {
                     throw new AuthorizationDeniedException(ErrorCode.AuthorizationDeniedException.getMessage());
                 }
             }
@@ -129,21 +134,78 @@ public class CategoryImplementation implements CategoryService {
     }
 
     @Override
-    public CategoryResponse getCategoryById(Long id) {
-        return categoryRepositories.findById(id)
-                .map(category -> CategoryResponse.builder()
-                        .id(category.getId())
-                        .name(category.getName())
-                        .build())
+    @Transactional
+    public CategoryResponse getCategoryById(Long id, HttpServletRequest request) {
+        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        UserDto user = userService.getCurrentUser();
+
+        if (user.getTenantId() != tenantId) {
+            throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+        }
+        Category existingCategory = categoryRepositories.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+
+         // Phân quyền truy cập
+         if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
+             // Store manager chỉ được truy cập category công khai hoặc category của chính store
+             if (!existingCategory.getIsSystemDefault() &&
+                     !existingCategory.getTenantId().equals(user.getTenantId())) {
+                 throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+             }
+         }
+        // Nếu là ADMIN hoặc SUPER_ADMIN thì có thể truy cập mọi category
+        return CategoryResponse.builder().id(existingCategory.getId()).name(existingCategory.getName()).isSystemDefault(existingCategory.getIsSystemDefault()).build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void deleteCategoryById(Long id) {
-        Category category = categoryRepositories.findById(id)
+    @Transactional
+    public void deleteCategoryById(Long id, HttpServletRequest request) {
+        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        UserDto user = userService.getCurrentUser();
+
+        if (user.getTenantId() != tenantId) {
+            throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+        }
+        Category existingCategory = categoryRepositories.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-        categoryRepositories.delete(category);
+        // 2 th: cate public và cate private
+        // 1. cate public (chi co admin mơi duoc xoa)
+        if (user.getRole() == UserRole.ROLE_SUPER_ADMIN) {
+            deleteCategoryAndCleanRelationship(existingCategory);
+            return;
+        }
+
+        // 2. cate private
+        // Phân quyền truy cập
+        if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
+            // Store manager chỉ xoá category của chính store
+            // Kiểm tra nếu là category công khai (isSystemDefault = true) thì không cho xóa
+            if (existingCategory.getIsSystemDefault()) {
+                throw new BadCredentialsException("Không thể xóa category công khai!");
+            }
+            // Kiểm tra xem category này thuộc store của user không
+            if (!existingCategory.getTenantId().equals(user.getTenantId())) {
+                throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
+            }
+            // Xóa category và loại bỏ khỏi relationship với store
+            deleteCategoryAndCleanRelationship(existingCategory);
+            return;
+        }
+        throw new BadCredentialsException("Không có quyền xóa category!");
     }
-    
+    // Helper method để xóa category và cleanup relationship
+    private void deleteCategoryAndCleanRelationship(Category categoryToDelete) {
+        // Trước tiên, loại bỏ category khỏi các store liên quan
+        if (categoryToDelete.getStores() != null && !categoryToDelete.getStores().isEmpty()) {
+            for (Store store : categoryToDelete.getStores()) {
+                if (store.getCategories() != null) {
+                    store.getCategories().remove(categoryToDelete);
+                    storeRepositories.save(store); // Lưu lại store sau khi loại bỏ category
+                }
+            }
+        }
+        
+        // Sau đó xóa category
+        categoryRepositories.delete(categoryToDelete);
+    }
 }

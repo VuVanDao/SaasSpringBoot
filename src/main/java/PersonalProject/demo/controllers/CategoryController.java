@@ -44,16 +44,16 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<CategoryResponse> getCategoryById(@PathVariable Long id) {
-        CategoryResponse categoryResponse = categoryService.getCategoryById(id);
+    public ApiResponse<CategoryResponse> getCategoryById(@PathVariable Long id, HttpServletRequest request) {
+        CategoryResponse categoryResponse = categoryService.getCategoryById(id,request);
         return ApiResponse.<CategoryResponse>builder()
                 .result(categoryResponse)
                 .message("Category retrieved successfully")
                 .build();
     }
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteCategoryById(@PathVariable Long id) {
-        categoryService.deleteCategoryById(id);
+    public ApiResponse<Void> deleteCategoryById(@PathVariable Long id, HttpServletRequest request) {
+        categoryService.deleteCategoryById(id, request);
         return ApiResponse.<Void>builder()
                 .message("Category deleted successfully")
                 .build();

@@ -15,6 +15,9 @@ public interface CategoryService {
 
     List<CategoryResponse> getAllCategories(HttpServletRequest request);
 
-    CategoryResponse getCategoryById(Long id);
-    void deleteCategoryById(Long id);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
+    CategoryResponse getCategoryById(Long id, HttpServletRequest request);
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
+    void deleteCategoryById(Long id, HttpServletRequest request);
 }
