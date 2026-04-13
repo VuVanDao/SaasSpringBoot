@@ -118,13 +118,21 @@ public class CategoryImplementation implements CategoryService {
         System.out.println("------------------USER LOGIN________"+user);
         if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
             // Nếu là store admin, lấy cả categories công khai và categories của store riêng
-            // Lấy theo tenantId để tối ưu hiệu năng
-            return categoryRepositories.findAllByTenantIdOrIsSystemDefaultTrue(tenantId).stream()
+            // 1. Tìm store thuộc tenant này (Giả sử 1 tenant quản lý 1 store, hoặc lấy store đầu tiên)
+            // Nếu user quản lý nhiều store, bạn có thể cần truyền storeId từ request hoặc query theo list storeId.
+            List<Store> stores = storeRepositories.findAllByTenantId(tenantId);
+            if (stores.isEmpty()) {
+                return Collections.emptyList();
+            }
+            // Lấy ID của store (ở đây ví dụ lấy store đầu tiên, bạn có thể logic phức tạp hơn nếu cần)
+            Long storeId = stores.get(0).getId();
+            List<Category> categories = categoryRepositories.findCategoriesByStoreId(storeId);
+            return categories.stream()
                 .map(category -> CategoryResponse.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .isSystemDefault(category.getIsSystemDefault())
-                    .build())
+                        .id(category.getId())
+                        .name(category.getName())
+                        .isSystemDefault(category.getIsSystemDefault())
+                        .build())
                 .toList();
         }
           // Nếu là admin, lấy tất cả categories
