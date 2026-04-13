@@ -2,6 +2,7 @@ package PersonalProject.demo.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface StoreRepositories extends JpaRepository<Store, Long> {
     List<Store> findAllStore(Long tenantId);
 
     Optional<Store> findByTenantId(Long tenantId);
+
+    @Query("SELECT s FROM Store s WHERE s.id IN :storeIds AND s.tenantId = :tenantId")
+    List<Store> findAllByIdAndTenantId(@Param("storeIds") Set<Long> storeIds, @Param("tenantId") Long tenantId);
 }

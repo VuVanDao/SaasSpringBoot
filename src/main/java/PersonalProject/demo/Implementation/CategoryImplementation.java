@@ -27,9 +27,11 @@ import PersonalProject.demo.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CategoryImplementation implements CategoryService {
     private final CategoryRepositories categoryRepositories;
     private final ApplicationProperties applicationProperties;
@@ -60,12 +62,14 @@ public class CategoryImplementation implements CategoryService {
             // 2. do store admin tạo, lúc này cần check kĩ hơn
             // do của store admin tạo nên nó chỉ thuộc về store đó
             if (request.getStoreId().size() > 1) {
+                log.info("Error in request.getStoreId().size() > 1");
                 throw new RuntimeException("Error when create category");
             }
             // tìm store
-            List<Store> stores = storeRepositories.findAllById(request.getStoreId());
+            List<Store> stores = storeRepositories.findAllByIdAndTenantId(request.getStoreId(),tenantId);
             // truwong hop ko tim thay store
             if (stores == null || stores.size() == 0) {
+                log.info("Error in stores == null || stores.size() == 0");
                 throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
             }
             // truong hop store tenantID ko trung tenantID
@@ -76,7 +80,7 @@ public class CategoryImplementation implements CategoryService {
                 }
             }
             Category newCategory = Category.builder().name(request.getName()).tenantId(tenantId)
-                    .isSystemDefault(request.getIsSystemDefault()).build();
+                    .isSystemDefault(false).build();
             categoryRepositories.save(newCategory);
 
             // Thiết lập mối quan hệ với stores
