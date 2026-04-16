@@ -18,6 +18,7 @@ import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.BranchDto;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.services.BranchService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,8 +28,8 @@ public class BranchController {
     private final BranchService branchService;
 
     @PostMapping
-    public ApiResponse<BranchDto> createBranch(@RequestBody CreateBranchRequest request) {
-        BranchDto branchDto = branchService.createBranch(request);
+    public ApiResponse<BranchDto> createBranch(@RequestBody CreateBranchRequest request,HttpServletRequest request2) {
+        BranchDto branchDto = branchService.createBranch(request, request2);
         return ApiResponse.<BranchDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(branchDto)
@@ -37,8 +38,8 @@ public class BranchController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<BranchDto> getBranchById(@PathVariable Long id) {
-        BranchDto branchDto = branchService.getBranchById(id);
+    public ApiResponse<BranchDto> getBranchById(@PathVariable Long id,HttpServletRequest request2) {
+        BranchDto branchDto = branchService.getBranchById(id, request2);
         return ApiResponse.<BranchDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(branchDto)
@@ -47,8 +48,8 @@ public class BranchController {
     }
 
     @GetMapping
-    public ApiResponse<List<BranchDto>> getAllBranches() {
-        List<BranchDto> branches = branchService.getAllBranches();
+    public ApiResponse<List<BranchDto>> getAllBranches(HttpServletRequest request2) {
+        List<BranchDto> branches = branchService.getAllBranches(request2);
         return ApiResponse.<List<BranchDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(branches)
@@ -57,8 +58,8 @@ public class BranchController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<BranchDto> updateBranch(@PathVariable Long id, @RequestBody UpdateBranchRequest request) {
-        BranchDto updated = branchService.updateBranch(id, request);
+    public ApiResponse<BranchDto> updateBranch(@PathVariable Long id, @RequestBody UpdateBranchRequest request, HttpServletRequest request2) {
+        BranchDto updated = branchService.updateBranch(id, request, request2);
         return ApiResponse.<BranchDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(updated)
@@ -67,8 +68,8 @@ public class BranchController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteBranch(@PathVariable Long id) {
-        branchService.deleteBranch(id);
+    public ApiResponse<String> deleteBranch(@PathVariable Long id, HttpServletRequest request2) {
+        branchService.deleteBranch(id, request2);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .result("Branch deleted successfully")

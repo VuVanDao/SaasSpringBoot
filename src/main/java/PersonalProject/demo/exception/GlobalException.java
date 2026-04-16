@@ -78,4 +78,13 @@ public class GlobalException {
         apiResponse.setCode(errorCode.getCode());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
     }
+
+    @ExceptionHandler(value = TenantException.class)
+    ResponseEntity<ApiResponse> handlingTenantException(TenantException ex) {
+        ApiResponse apiResponse = new ApiResponse<>();
+        ErrorCode errorCode = ErrorCode.Tenant_Exception;
+        apiResponse.setMessage(errorCode.getMessage());
+        apiResponse.setCode(errorCode.getCode());
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
+    }
 }

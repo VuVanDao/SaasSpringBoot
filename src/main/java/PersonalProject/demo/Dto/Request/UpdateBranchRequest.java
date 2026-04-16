@@ -20,4 +20,5 @@ public class UpdateBranchRequest {
     LocalTime openingTime;
     LocalTime closingTime;
     Long managerId;
+    Long store_id;
 }

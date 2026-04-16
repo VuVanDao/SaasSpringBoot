@@ -20,4 +20,6 @@ public class CreateBranchRequest {
     LocalTime openingTime;
     LocalTime closingTime;
     Long managerId;
+    Long store_id;
+    Long tenant_id;
 }

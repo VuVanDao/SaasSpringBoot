@@ -6,6 +6,7 @@ import PersonalProject.demo.Dto.Request.CreateBranchRequest;
 import PersonalProject.demo.Dto.Request.UpdateBranchRequest;
 import PersonalProject.demo.Dto.Response.BranchDto;
 import PersonalProject.demo.models.Branch;
+import PersonalProject.demo.models.Store;
 import PersonalProject.demo.models.User;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class BranchMapper {
     private final userMapper userMapper;
 
-    public Branch convertToModel(CreateBranchRequest request, User manager) {
+    public Branch convertToModel(CreateBranchRequest request, User manager, Store store) {
         return Branch.builder()
                 .name(request.getName())
                 .address(request.getAddress())
@@ -24,10 +25,12 @@ public class BranchMapper {
                 .openingTime(request.getOpeningTime())
                 .closingTime(request.getClosingTime())
                 .manager(manager)
+                .store(store)
+                .tenantId(request.getTenant_id())
                 .build();
     }
 
-    public Branch convertToModel(UpdateBranchRequest request, Branch existing, User manager) {
+    public Branch convertToModel(UpdateBranchRequest request, Branch existing, User manager,Store store) {
         existing.setName(request.getName());
         existing.setAddress(request.getAddress());
         existing.setPhone(request.getPhone());
@@ -36,6 +39,7 @@ public class BranchMapper {
         existing.setOpeningTime(request.getOpeningTime());
         existing.setClosingTime(request.getClosingTime());
         existing.setManager(manager);
+        existing.setStore(store);
         return existing;
     }
 
@@ -50,6 +54,7 @@ public class BranchMapper {
                 .openingTime(branch.getOpeningTime())
                 .closingTime(branch.getClosingTime())
                 .manager(branch.getManager() == null ? null : userMapper.convertToDto(branch.getManager()))
+                .tenant_id(branch.getTenantId())
                 .build();
     }
 }

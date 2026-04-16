@@ -17,4 +17,5 @@ public class BranchDto {
     LocalTime openingTime;
     LocalTime closingTime;
     UserDto manager;
+    Long tenant_id;
 }

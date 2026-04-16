@@ -135,7 +135,7 @@ public class CategoryImplementation implements CategoryService {
                         .build())
                 .toList();
         }
-          // Nếu là admin, lấy tất cả categories
+        // Nếu là admin, lấy tất cả categories
         return categoryRepositories.findAll().stream()
             .map(category -> CategoryResponse.builder()
                 .id(category.getId())
