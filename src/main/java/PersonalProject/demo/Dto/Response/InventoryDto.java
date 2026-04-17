@@ -13,4 +13,6 @@ public class InventoryDto {
     private String inventoryName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long tenant_id;
+    private Long branch_id;
 }

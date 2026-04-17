@@ -23,11 +23,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class InventoryItem extends AbstractTenantModel{
     @ManyToOne
-    @JoinColumn(name = "inventory_id", nullable = false)
+    @JoinColumn(name = "inventory_id", nullable = true)
     private Inventory inventory;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true)
     private Products product;
 
     @Column(nullable = false)

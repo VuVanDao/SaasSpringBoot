@@ -17,6 +17,7 @@ import PersonalProject.demo.Dto.Request.UpdateInventoryRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.InventoryDto;
 import PersonalProject.demo.services.InventoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,8 +28,8 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ApiResponse<InventoryDto> createInventory(@RequestBody CreateInventoryRequest request) {
-        InventoryDto inventory = inventoryService.createInventory(request);
+    public ApiResponse<InventoryDto> createInventory(@RequestBody CreateInventoryRequest request, HttpServletRequest request2) {
+        InventoryDto inventory = inventoryService.createInventory(request, request2);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(inventory)
@@ -37,8 +38,8 @@ public class InventoryController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<InventoryDto> updateInventory(@PathVariable Long id, @RequestBody UpdateInventoryRequest request) {
-        InventoryDto inventory = inventoryService.updateInventory(id, request);
+    public ApiResponse<InventoryDto> updateInventory(@PathVariable Long id, @RequestBody UpdateInventoryRequest request, HttpServletRequest request2) {
+        InventoryDto inventory = inventoryService.updateInventory(id, request, request2);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventory)
@@ -47,8 +48,8 @@ public class InventoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteInventory(@PathVariable Long id) {
-        inventoryService.deleteInventory(id);
+    public ApiResponse<Void> deleteInventory(@PathVariable Long id, HttpServletRequest request2) {
+        inventoryService.deleteInventory(id, request2);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
                 .message("Inventory deleted successfully")
@@ -56,8 +57,8 @@ public class InventoryController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<InventoryDto> getInventoryById(@PathVariable Long id) {
-        InventoryDto inventory = inventoryService.getInventoryById(id);
+    public ApiResponse<InventoryDto> getInventoryById(@PathVariable Long id, HttpServletRequest request2) {
+        InventoryDto inventory = inventoryService.getInventoryById(id, request2);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventory)
@@ -76,8 +77,8 @@ public class InventoryController {
     }
 
     @GetMapping("/branches/{branchId}")
-    public ApiResponse<List<InventoryDto>> getAllInventoryByBranchId(@PathVariable Long branchId) {
-        List<InventoryDto> inventories = inventoryService.getAllInventoryByBranchId(branchId);
+    public ApiResponse<List<InventoryDto>> getAllInventoryByBranchId(@PathVariable Long branchId, HttpServletRequest request2) {
+        List<InventoryDto> inventories = inventoryService.getAllInventoryByBranchId(branchId, request2);
         return ApiResponse.<List<InventoryDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventories)

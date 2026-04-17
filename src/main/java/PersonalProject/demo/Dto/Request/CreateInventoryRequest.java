@@ -6,4 +6,5 @@ import lombok.Data;
 public class CreateInventoryRequest {
     private Long branchId;
     private String inventoryName;
+    private Long tenant_id;
 }
