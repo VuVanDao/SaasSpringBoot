@@ -29,4 +29,5 @@ public interface InventoryService {
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
     List<InventoryDto> getAllInventory();
+
 }
