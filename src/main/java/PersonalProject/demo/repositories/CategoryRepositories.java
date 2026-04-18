@@ -28,4 +28,12 @@ public interface CategoryRepositories extends JpaRepository<Category, Long> {
     */
     @Query("SELECT DISTINCT c FROM Category c JOIN c.stores s WHERE s.id = :storeId")
     List<Category> findCategoriesByStoreId(@Param("storeId") Long storeId);
+    
+    @Query("SELECT c FROM Category c WHERE c.id IN :categoryIds " +
+       "AND (c.isSystemDefault = true " +
+       "OR (c.isSystemDefault = false AND c.tenantId = :tenantId))")
+    List<Category> findByCategoryIdsAndTenantId(
+        @Param("categoryIds") Set<Long> categoryIds,
+        @Param("tenantId") Long tenantId
+    );
 }

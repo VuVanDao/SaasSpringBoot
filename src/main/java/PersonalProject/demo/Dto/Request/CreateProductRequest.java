@@ -2,11 +2,15 @@ package PersonalProject.demo.Dto.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateProductRequest {
 
     @NotBlank(message = "Name is required")
@@ -30,4 +34,9 @@ public class CreateProductRequest {
 
     // @NotNull(message = "Store ID is required")
     // private Long storeId;
+
+    @NotNull(message = "Tenant_id price is required")
+    Long tenant_id;
+
+    Set<Long> category_id;
 }

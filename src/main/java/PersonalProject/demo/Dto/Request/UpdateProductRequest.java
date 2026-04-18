@@ -29,6 +29,4 @@ public class UpdateProductRequest {
     private BigDecimal sellingPrice;
 
     private Long[] categoryIds;
-    // @NotNull(message = "Store ID is required")
-    // private Long storeId;
 }

@@ -23,7 +23,7 @@ public class ProductMapper {
     private final storeMapper storeMapper;
     private final CategoryRepositories categoryRepository;
 
-    public Products convertToModel(CreateProductRequest request, Store store) {
+    public Products convertToModel(CreateProductRequest request, List<Category> categories) {
         return Products.builder()
                 .name(request.getName())
                 .sku(request.getSku())
@@ -32,7 +32,8 @@ public class ProductMapper {
                 .image(request.getImage())
                 .mrp(request.getMrp())
                 .sellingPrice(request.getSellingPrice())
-                // .store(store)
+                .tenantId(request.getTenant_id())
+                .categories(new HashSet<>(categories))
                 .build();
     }
 
@@ -65,7 +66,7 @@ public class ProductMapper {
                 .sellingPrice(product.getSellingPrice())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
-                .categories(product.getCategories().stream().map(category -> CategoryResponse.builder().name(category.getName()).build()).toList())
+                .categories(product.getCategories().stream().map(category -> CategoryResponse.builder().id(category.getId()).name(category.getName()).isSystemDefault(category.getIsSystemDefault()).build()).toList())
                 .build();
         // if (includeStore) {
         //     builder.setStore(storeMapper.convertToDto(product.getStore()));
