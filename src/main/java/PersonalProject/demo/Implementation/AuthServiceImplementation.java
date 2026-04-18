@@ -1,5 +1,6 @@
 package PersonalProject.demo.Implementation;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -14,13 +15,16 @@ import PersonalProject.demo.Dto.Request.CreateUserRequest;
 import PersonalProject.demo.Dto.Request.LoginRequest;
 import PersonalProject.demo.Dto.Response.AuthResponse;
 import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.configuration.JwtConstant;
 import PersonalProject.demo.configuration.JwtProvider;
 import PersonalProject.demo.domain.UserRole;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.userMapper;
+import PersonalProject.demo.models.RefreshToken;
 import PersonalProject.demo.models.Tenant;
 import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.AuthRepositories;
+import PersonalProject.demo.repositories.RefreshTokenRepository;
 import PersonalProject.demo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +36,7 @@ public class AuthServiceImplementation implements AuthRepositories {
     private final JwtProvider jwtProvider;
     private final CustomUserImplementation customUserImplementation;
     private final userMapper userMapper;
+    private final RefreshTokenRepository refreshTokenRepository;
     
     @Override
     public AuthResponse signUp(CreateUserRequest request) {
@@ -59,13 +64,23 @@ public class AuthServiceImplementation implements AuthRepositories {
         - Trong suốt một Request (từ lúc gửi lên đến lúc nhận phản hồi), Spring sẽ nhớ mặt người dùng này.
         */
         SecurityContextHolder.getContext().setAuthentication(auth);
-        String jwt = jwtProvider.generateToken(auth);
-        return AuthResponse.builder().jwt(jwt).message("sign up successful").userInfo(userMapper.convertToDto(user)).build();
+        String jwt = jwtProvider.generateToken(auth);// access token
+        String refreshToken = jwtProvider.generateRefreshToken();
+
+        // Lưu Refresh Token vào DB
+        RefreshToken rt = RefreshToken.builder()
+                .user(user)
+                .token(refreshToken)
+                .expiryDate(Instant.now().plusMillis(JwtConstant.REFRESH_TOKEN_EXPIRATION))
+                .build();
+        refreshTokenRepository.save(rt);
+        return AuthResponse.builder().jwt(jwt).refreshToken(refreshToken).message("sign up successful").userInfo(userMapper.convertToDto(user)).build();
     }
 
     @Override
     public AuthResponse login(LoginRequest userDto) {
         System.out.println("-----------------AuthServiceImplementation.login-----------------");
+
         String email = userDto.getEmail();
         String password = userDto.getPassword();
         System.out.println("email: " + email);
@@ -76,10 +91,21 @@ public class AuthServiceImplementation implements AuthRepositories {
         // Cập nhật thời gian đăng nhập cuối cùng của user
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtProvider.generateToken(authentication);
-        return AuthResponse.builder().jwt(jwt).message("login successful").userInfo(userMapper.convertToDto(user)).build();
+
+        // generate accessToken và refreshToken
+        String accessToken = jwtProvider.generateToken(authentication);
+        String refreshToken = jwtProvider.generateRefreshToken();
+
+        // Lưu Refresh Token vào DB
+        RefreshToken rt = RefreshToken.builder()
+                .user(user)
+                .token(refreshToken)
+                .expiryDate(Instant.now().plusMillis(JwtConstant.REFRESH_TOKEN_EXPIRATION))
+                .build();
+        refreshTokenRepository.save(rt);
+        
+        return AuthResponse.builder().jwt(accessToken).refreshToken(refreshToken).message("login successful").userInfo(userMapper.convertToDto(user)).build();
     }
 
     private Authentication authenticate(String email, String password) {
@@ -92,5 +118,31 @@ public class AuthServiceImplementation implements AuthRepositories {
             throw new RuntimeException("Invalid password");
         }
         return new UsernamePasswordAuthenticationToken(email, null, user.getAuthorities());
+    }
+
+    @Override
+    public AuthResponse refreshToken(String requestRefreshToken) {
+        return refreshTokenRepository.findByToken(requestRefreshToken)
+            .map(token -> {
+                // Kiểm tra hết hạn chưa
+                if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+                    refreshTokenRepository.delete(token);
+                    throw new RuntimeException("Refresh token was expired. Please make a new signin request");
+                }
+                return token;
+            })
+            .map(RefreshToken::getUser)
+            .map(user -> {
+                // Tạo Access Token MỚI
+                Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
+                String newAccessToken = jwtProvider.generateToken(auth);
+                
+                return AuthResponse.builder()
+                        .jwt(newAccessToken)
+                        .refreshToken(requestRefreshToken) // Có thể trả lại RT cũ hoặc xoay vòng (Rotate RT)
+                        .message("Token refreshed")
+                        .build();
+            })
+            .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
     }
 }

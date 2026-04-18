@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -19,6 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider {
     static SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRET.getBytes());
 
+    // 1. Sinh Access Token
     public String generateToken(Authentication authentication) {
         System.out.println("-----------------JwtProvider.generateToken-----------------");
         // GrantedAuthority là một interface đại diện cho quyền (authority/permission) mà một user có trong hệ thống.
@@ -33,9 +35,9 @@ public class JwtProvider {
         return Jwts.builder()
                 // issuedAt (IAT): Đây là thời điểm phát hành token (thời điểm hệ thống tạo ra nó). Nó ghi lại chính xác lúc nào người dùng đăng nhập thành công.
                 .issuedAt(new Date())
-                // expiration (EXP): Đây mới thực sự là thời điểm hết hạn. Trong code của bạn, nó được đặt là 24 giờ sau thời điểm phát hành. 
-                // Điều này có nghĩa là token sẽ chỉ hợp lệ trong vòng 24 giờ kể từ khi nó được tạo ra.
-                .expiration(new Date(new Date().getTime() + 86400000))
+                // expiration (EXP): Đây mới thực sự là thời điểm hết hạn. Trong code của bạn, nó được đặt là 5p sau thời điểm phát hành. 
+                // Điều này có nghĩa là token sẽ chỉ hợp lệ trong vòng 5p kể từ khi nó được tạo ra.
+                .expiration(new Date(new Date().getTime() + JwtConstant.ACCESS_TOKEN_EXPIRATION))
                 // Nhét email vào một cái túi (Claim).
                 .claim("email", authentication.getName())
                 // Lưu danh sách quyền của user vào token.
@@ -51,6 +53,11 @@ public class JwtProvider {
                 .compact();
     }
 
+    // 2. Sinh Refresh Token (Chuỗi random hoặc JWT đều được, ở đây khuyên dùng UUID cho bảo mật DB)
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();
+    }
+    
     public String GetEmailFromToken(String jwt) {
         System.out.println("-----------------JwtProvider.GetEmailFromToken-----------------");
         SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRET.getBytes());

@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     
     private final ApplicationProperties _ApplicationProperties;
-    private final String[] Public_Post_Endpoint = { "/auth/sign_up" ,"/auth/login"}; 
+    private final String[] Public_Post_Endpoint = { "/auth/sign_up" ,"/auth/login","/auth/refresh"}; 
     private final String[] Public_Get_Endpoint = { "/products/store/{storeId}" ,"/products/search" ,"/products/{id}","/categories","/stores" }; 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{

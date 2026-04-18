@@ -7,5 +7,8 @@ import PersonalProject.demo.Dto.Response.UserDto;
 
 public interface AuthRepositories {
     AuthResponse signUp(CreateUserRequest userDto);
+
     AuthResponse login(LoginRequest userDto);
+    
+    AuthResponse refreshToken(String requestRefreshToken);
 }

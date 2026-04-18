@@ -9,7 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthResponse {
-    String jwt;
+    String jwt;//accessToken
+    String refreshToken;
     String message;
     UserDto userInfo;
 }
