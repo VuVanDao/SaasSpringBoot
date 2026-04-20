@@ -19,6 +19,7 @@ import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.domain.StoreStatus;
 import PersonalProject.demo.domain.UserRole;
 import PersonalProject.demo.exception.ResourceNotFoundException;
+import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.mapper.storeMapper;
 import PersonalProject.demo.models.Branch;
 import PersonalProject.demo.models.Category;
@@ -31,6 +32,7 @@ import PersonalProject.demo.repositories.TenantRepository;
 import PersonalProject.demo.repositories.UserRepository;
 import PersonalProject.demo.services.StoreService;
 import PersonalProject.demo.services.UserService;
+import PersonalProject.demo.utils.TenantUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +50,11 @@ public class StoreServiceImplementation implements StoreService {
     private final CategoryRepositories categoryRepositories;
     private final TenantRepository tenantRepository;
     private final ApplicationProperties applicationProperties;
+    private final TenantUtil tenantUtil;
 
     @Override
     public StoreDto createStore(CreateStoreRequest storeDto, HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -68,6 +71,7 @@ public class StoreServiceImplementation implements StoreService {
         return storeMapper.convertToDto(savedStore);
     }
 
+    // CHECK: theem cais check tenantId
     @Override
     public StoreDto getStoreById(Long id) {
         Store store = storeRepositories.findById(id).orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
@@ -77,7 +81,7 @@ public class StoreServiceImplementation implements StoreService {
     @Override
     @Transactional
     public List<StoreDto> getAllStores(HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -85,6 +89,7 @@ public class StoreServiceImplementation implements StoreService {
         return stores.stream().map(storeMapper::convertToDto).toList();
     }
 
+    // CHECK: theem cais check tenantId
     @Override
     @Transactional
     public StoreDto getStoreByAdmin() {
@@ -102,7 +107,7 @@ public class StoreServiceImplementation implements StoreService {
     @Override
     @Transactional
     public StoreDto updateStore(Long id, UpdateStoreRequest storeDto, HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -133,7 +138,7 @@ public class StoreServiceImplementation implements StoreService {
 
     @Override
     public void deleteStore(Long id, HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -150,7 +155,7 @@ public class StoreServiceImplementation implements StoreService {
     public StoreDto getStoreByEmployee(HttpServletRequest request) {
         // sủa l;ại cái hàm này sau
         // UserDto currentUser = userService.getCurrentUser();
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -174,16 +179,14 @@ public class StoreServiceImplementation implements StoreService {
 
     @Override
     public StoreDto moderateStore(Long id, StoreStatus storeStatus, HttpServletRequest request) {
-        // CHECK: đang có lỗ hổng, email trong jwt sai nhưng vẫn moderate được, nhớ check, phải bổ sung xem storeAdmin của store đagn moderate đó có đúng là người đang requets
-        // thông qua jwt không
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        Long tenantId = tenantUtil.validateTenant(request);
         if (tenantId == null) {
-            throw new RuntimeException("Missing tenant");
+            throw new TenantException(ErrorCode.Tenant_Exception);
         }
         Store existingStore = storeRepositories.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (existingStore.getTenantId() != tenantId) {
-            throw new RuntimeException("you dont have permission to moderateStore");
+            throw new TenantException(ErrorCode.Tenant_Exception);
         }
         existingStore.setStoreStatus(storeStatus);
         Store updatedStore = storeRepositories.save(existingStore);

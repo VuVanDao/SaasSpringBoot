@@ -46,8 +46,8 @@ public class ProductMapper {
         existing.setImage(request.getImage());
         existing.setMrp(request.getMrp());
         existing.setSellingPrice(request.getSellingPrice());
-        if (existing.getCategories().size() != request.getCategoryIds().length) {
-            List<Category> categories = categoryRepository.findAllById(Arrays.asList(request.getCategoryIds()));
+        if (existing.getCategories().size() != request.getCategoryIds().size()) {
+            List<Category> categories = categoryRepository.findAllById(request.getCategoryIds());
             existing.setCategories(new HashSet<>(categories));
         } 
         // store not updated

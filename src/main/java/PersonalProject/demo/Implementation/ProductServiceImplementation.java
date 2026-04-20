@@ -2,6 +2,7 @@ package PersonalProject.demo.Implementation;
 
 import java.security.Security;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -74,6 +75,15 @@ public class ProductServiceImplementation implements ProductService {
         Products existingProduct = productRepository.findAllByIdAndTenantId(id,tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
 
+        List<Long> requestUpdateCate = request.getCategoryIds();
+        List<Long> categoriesNotBelongToStore = existingProduct.getCategories().stream()
+                .filter(cate -> !requestUpdateCate.contains(cate.getId()))
+                .map(Category::getId)
+                .collect(Collectors.toList());
+        if (!categoriesNotBelongToStore.isEmpty()) {
+            // hoặc có thể chọn am thầm xoá những cate không hợp lệ
+            throw new IllegalArgumentException("This category with id : " + categoriesNotBelongToStore + " is not affiliated with this store");
+        }
         existingProduct = productMapper.convertToModel(request, existingProduct);
         Products updatedProduct = productRepository.save(existingProduct);
         return productMapper.convertToDto(updatedProduct,true);

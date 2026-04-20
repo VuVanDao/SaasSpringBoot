@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class UpdateProductRequest {
@@ -28,5 +29,5 @@ public class UpdateProductRequest {
     @NotNull(message = "Selling price is required")
     private BigDecimal sellingPrice;
 
-    private Long[] categoryIds;
+    private List<Long> categoryIds;
 }
