@@ -46,7 +46,7 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public ProductDto createProduct(CreateProductRequest request, HttpServletRequest request2) {
         UserDto currentUser = tenantUtil.validateTenantAndGetUser(request2);
-        List<Category> categories = categoryRepositories.findByCategoryIdsAndTenantId(request.getCategory_id(),
+        List<Category> categories = categoryRepositories.findAllByCategoryIdsAndTenantId(request.getCategory_id(),
                 currentUser.getTenantId());
         Products products = productMapper.convertToModel(request, categories);
         Products savedProduct = productRepository.save(products);

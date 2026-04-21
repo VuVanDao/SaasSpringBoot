@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import PersonalProject.demo.models.Branch;
 import PersonalProject.demo.models.Category;
 
 public interface CategoryRepositories extends JpaRepository<Category, Long> {
@@ -29,11 +30,21 @@ public interface CategoryRepositories extends JpaRepository<Category, Long> {
     @Query("SELECT DISTINCT c FROM Category c JOIN c.stores s WHERE s.id = :storeId")
     List<Category> findCategoriesByStoreId(@Param("storeId") Long storeId);
     
+    /*
+        SELECT id, is_system_default, tenant_id, name, ... // Liệt kê tất cả các cột của bảng 
+        FROM category 
+        WHERE id IN (?, ?, ?) // Dấu ? tương ứng với số lượng ID trong list categoryIds 
+        AND (is_system_default = 1 
+        OR (is_system_default = 0 AND tenant_id = ?));
+     */
     @Query("SELECT c FROM Category c WHERE c.id IN :categoryIds " +
        "AND (c.isSystemDefault = true " +
        "OR (c.isSystemDefault = false AND c.tenantId = :tenantId))")
-    List<Category> findByCategoryIdsAndTenantId(
+    List<Category> findAllByCategoryIdsAndTenantId(
         @Param("categoryIds") Set<Long> categoryIds,
         @Param("tenantId") Long tenantId
     );
+
+    List<Category> findAllByIdInAndTenantId(List<Long> ids, Long tenantId);
+
 }

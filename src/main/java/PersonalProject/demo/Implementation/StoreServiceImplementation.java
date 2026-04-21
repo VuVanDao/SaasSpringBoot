@@ -111,25 +111,37 @@ public class StoreServiceImplementation implements StoreService {
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
-        Store existingStore = storeRepositories.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
-        if (existingStore.getTenantId() != tenantId) {
-            throw new RuntimeException("You have not permission to update this store");
+        // check store
+        Store existingStore = storeRepositories.findAByIdAndTenantId(id,tenantId);
+        if (existingStore == null) {
+            throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }
+
         existingStore.setBrand(storeDto.getBrand());
         existingStore.setDescription(storeDto.getDescription());
 
         if (storeDto.getStoreContact() != null) {
             existingStore.setStoreContact(storeDto.getStoreContact());
         }
-        existingStore.setStoreStatus(storeDto.getStoreStatus());
+
+        // existingStore.setStoreStatus(storeDto.getStoreStatus());
+
+        // check branch
         if (storeDto.getBranchIds() != null && storeDto.getBranchIds().size() > 0) {
-            List<Branch> branches = branchRepository.findAllById(storeDto.getBranchIds());
+            List<Branch> branches = branchRepository.findAllByIdInAndTenantId(storeDto.getBranchIds(), tenantId);
+            if (branches.size() != storeDto.getBranchIds().size()) {
+                throw new IllegalArgumentException("Some branch ids are invalid or not under this tenant");
+            }
             existingStore.setBranches(branches);
         }
 
+        // check branch
         if(storeDto.getCategoryIds() != null && storeDto.getCategoryIds().size() > 0) {
-            List<Category> categories = categoryRepositories.findAllById(storeDto.getCategoryIds());
+            List<Category> categories = categoryRepositories.findAllByCategoryIdsAndTenantId(new HashSet<>(storeDto.getCategoryIds()),
+                    tenantId);
+            if (categories.size() != storeDto.getCategoryIds().size()) {
+                throw new IllegalArgumentException("Some category ids are invalid or not under this tenant");
+            }
             existingStore.setCategories(new HashSet<>(categories));
         }
         Store updatedStore = storeRepositories.save(existingStore);
