@@ -192,13 +192,10 @@ public class StoreServiceImplementation implements StoreService {
     @Override
     public StoreDto moderateStore(Long id, StoreStatus storeStatus, HttpServletRequest request) {
         Long tenantId = tenantUtil.validateTenant(request);
-        if (tenantId == null) {
-            throw new TenantException(ErrorCode.Tenant_Exception);
-        }
-        Store existingStore = storeRepositories.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
-        if (existingStore.getTenantId() != tenantId) {
-            throw new TenantException(ErrorCode.Tenant_Exception);
+        // check store
+        Store existingStore = storeRepositories.findAByIdAndTenantId(id,tenantId);
+        if (existingStore == null) {
+            throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }
         existingStore.setStoreStatus(storeStatus);
         Store updatedStore = storeRepositories.save(existingStore);
