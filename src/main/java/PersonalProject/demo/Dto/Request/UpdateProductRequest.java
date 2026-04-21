@@ -30,4 +30,7 @@ public class UpdateProductRequest {
     private BigDecimal sellingPrice;
 
     private List<Long> categoryIds;
+
+    @NotNull(message = "store_id must not be empty")
+    private Long store_id;
 }

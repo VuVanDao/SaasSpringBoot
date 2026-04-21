@@ -9,6 +9,7 @@ import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.ProductDto;
 import PersonalProject.demo.services.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +56,7 @@ public class ProductController {
     }
     // put: /products/{id} : update product by id
     @PutMapping("/{id}")
-    public ApiResponse<ProductDto> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest request, HttpServletRequest request2) {
+    public ApiResponse<ProductDto> updateProduct(@PathVariable Long id,@Valid @RequestBody UpdateProductRequest request, HttpServletRequest request2) {
         return ApiResponse.<ProductDto>builder()
                 .message("Product updated successfully")
                 .result(productService.updateProduct(id, request, request2))

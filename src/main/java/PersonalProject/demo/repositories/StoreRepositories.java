@@ -27,4 +27,6 @@ public interface StoreRepositories extends JpaRepository<Store, Long> {
 
     @Query("SELECT s FROM Store s WHERE s.id IN :storeIds AND s.tenantId = :tenantId")
     List<Store> findAllByIdAndTenantId(@Param("storeIds") Set<Long> storeIds, @Param("tenantId") Long tenantId);
+
+    Store findAByIdAndTenantId(Long store_id, Long tenantId);
 }

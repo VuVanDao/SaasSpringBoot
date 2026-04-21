@@ -2,6 +2,7 @@ package PersonalProject.demo.Implementation;
 
 import java.security.Security;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContext;
@@ -74,12 +75,17 @@ public class ProductServiceImplementation implements ProductService {
         Long tenantId = tenantUtil.validateTenant(request2);
         Products existingProduct = productRepository.findAllByIdAndTenantId(id,tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
+        Store store = storeRepositories.findAByIdAndTenantId(request.getStore_id(), tenantId);
+        if (store == null) {
+            throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
+        }
+        Set<Long> cateOfStore = store.getCategories().stream().map(Category::getId)
+                .collect(Collectors.toSet());
 
         List<Long> requestUpdateCate = request.getCategoryIds();
-        List<Long> categoriesNotBelongToStore = existingProduct.getCategories().stream()
-                .filter(cate -> !requestUpdateCate.contains(cate.getId()))
-                .map(Category::getId)
-                .collect(Collectors.toList());
+        List<Long> categoriesNotBelongToStore = requestUpdateCate.stream()
+                .filter(cateId -> !cateOfStore.contains(cateId))
+                .collect(Collectors.toList()); 
         if (!categoriesNotBelongToStore.isEmpty()) {
             // hoặc có thể chọn am thầm xoá những cate không hợp lệ
             throw new IllegalArgumentException("This category with id : " + categoriesNotBelongToStore + " is not affiliated with this store");
