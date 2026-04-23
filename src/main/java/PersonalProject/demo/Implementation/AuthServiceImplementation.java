@@ -94,8 +94,8 @@ public class AuthServiceImplementation implements AuthRepositories {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // generate accessToken và refreshToken
-        String accessToken = jwtProvider.generateToken(authentication);
-        String refreshToken = jwtProvider.generateRefreshToken();
+        String accessToken = jwtProvider.generateToken(authentication);// access token
+        String refreshToken = jwtProvider.generateRefreshToken();// refresh token
 
         // Lưu Refresh Token vào DB
         RefreshToken rt = RefreshToken.builder()
@@ -124,9 +124,10 @@ public class AuthServiceImplementation implements AuthRepositories {
     public AuthResponse refreshToken(String requestRefreshToken) {
         return refreshTokenRepository.findByToken(requestRefreshToken)
             .map(token -> {
-                // Kiểm tra hết hạn chưa
+                // Kiểm tra refresh token hết hạn chưa
                 if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-                    refreshTokenRepository.delete(token);
+                        refreshTokenRepository.delete(token);
+                    // CHECK: theem casi Errorcode o day cho clean
                     throw new RuntimeException("Refresh token was expired. Please make a new signin request");
                 }
                 return token;

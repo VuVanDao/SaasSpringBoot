@@ -75,7 +75,7 @@ public class ProductServiceImplementation implements ProductService {
         Long tenantId = tenantUtil.validateTenant(request2);
         Products existingProduct = productRepository.findAllByIdAndTenantId(id,tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
-        Store store = storeRepositories.findAByIdAndTenantId(request.getStore_id(), tenantId);
+        Store store = storeRepositories.findByIdAndTenantId(request.getStore_id(), tenantId);
         if (store == null) {
             throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }

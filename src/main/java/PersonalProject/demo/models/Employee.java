@@ -3,6 +3,7 @@ package PersonalProject.demo.models;
 import java.math.BigDecimal;
 
 import PersonalProject.demo.domain.EmployeeRole;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,21 +29,22 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Employee extends AbstractTenantModel {
     @OneToOne
-    User user;
+    User user; // User account của nhân viên
 
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
-    Store store;
+    Store store; // Store mà nhân viên thuộc về
 
     @ManyToOne
-    @JoinColumn(name = "branch_id", nullable = false)
-    Branch branch;
+    @JoinColumn(name = "branch_id", nullable = true)
+    Branch branch;  // Branch cụ thể (có thể chưa có)
 
     @Enumerated(EnumType.STRING)
     EmployeeRole employeeRole;
 
-    String email;
-    String phone;
+    String email;// email cong viec
+    String phone;// sdt cong viec
+    @Column(unique = true)
     String employeeCode; // Unique code for each employee
     BigDecimal salary;
 }

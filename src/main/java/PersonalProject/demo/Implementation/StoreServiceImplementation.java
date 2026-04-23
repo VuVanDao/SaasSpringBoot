@@ -112,7 +112,7 @@ public class StoreServiceImplementation implements StoreService {
             throw new RuntimeException("Missing tenant");
         }
         // check store
-        Store existingStore = storeRepositories.findAByIdAndTenantId(id,tenantId);
+        Store existingStore = storeRepositories.findByIdAndTenantId(id,tenantId);
         if (existingStore == null) {
             throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }
@@ -193,7 +193,7 @@ public class StoreServiceImplementation implements StoreService {
     public StoreDto moderateStore(Long id, StoreStatus storeStatus, HttpServletRequest request) {
         Long tenantId = tenantUtil.validateTenant(request);
         // check store
-        Store existingStore = storeRepositories.findAByIdAndTenantId(id,tenantId);
+        Store existingStore = storeRepositories.findByIdAndTenantId(id,tenantId);
         if (existingStore == null) {
             throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }

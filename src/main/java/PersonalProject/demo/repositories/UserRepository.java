@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User,Long>{
 
     @Query("SELECT u FROM User u  Where u.tenantId = :tenantId")
     List<User> findAllUserByTenantId(@Param("tenantId") Long tenantId);
+
+    Optional<User> findByIdAndTenantId(Long id, Long tenantId);
 }
