@@ -23,7 +23,7 @@ public interface EmployeeService {
     EmployeeDto getEmployeeByUserId(Long userId, HttpServletRequest request);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    EmployeeDto getEmployeeByBranchId(Long branchId, HttpServletRequest request);
+    List<EmployeeDto> getEmployeeByBranchId(Long branchId, HttpServletRequest request);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
     EmployeeDto UpdateEmployee(Long employeeId, UpdateEmployeeRequest updateEmployeeRequest,

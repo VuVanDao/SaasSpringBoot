@@ -6,5 +6,6 @@ public enum UserRole {
     ROLE_BRANCH_MANAGER,
     ROLE_STORE_MANAGER,
     ROLE_SUPER_ADMIN,
-    ROLE_STAFF
+    ROLE_STAFF,
+            ROLE_ADVISE
 }

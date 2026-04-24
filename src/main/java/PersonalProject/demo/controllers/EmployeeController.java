@@ -69,8 +69,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/branch/{branch_id}")
-    public ApiResponse<EmployeeDto> getEmployeeByBranchId(@PathVariable Long branch_id, HttpServletRequest request) {
-        return ApiResponse.<EmployeeDto>builder()
+    public ApiResponse<List<EmployeeDto>> getEmployeeByBranchId(@PathVariable Long branch_id, HttpServletRequest request) {
+        return ApiResponse.<List<EmployeeDto>>builder()
                 .message("Get Employee by Branch ID complete")
                 .result(employeeService.getEmployeeByBranchId(branch_id, request))
                 .code(200)

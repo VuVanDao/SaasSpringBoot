@@ -83,11 +83,10 @@ public class EmployeeServiceImplementation implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto getEmployeeByBranchId(Long branchId, HttpServletRequest request) {
+    public List<EmployeeDto> getEmployeeByBranchId(Long branchId, HttpServletRequest request) {
         Long tenantId = tenantUtil.validateTenant(request);
-        Employee employee = employeeRepository.findByBranchIdAndTenantId(branchId, tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
-        return employeeMapper.toEmployeeDto(employee);
+        List<Employee> employees = employeeRepository.findAllByBranchIdAndTenantId(branchId, tenantId);
+        return employees.stream().map(employeeMapper::toEmployeeDto).collect(Collectors.toList());
     }
 
     @Override
