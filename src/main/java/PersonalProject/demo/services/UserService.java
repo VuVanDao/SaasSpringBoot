@@ -20,8 +20,12 @@ public interface UserService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
     UserDto getUserById(Long id);
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     List<UserDto> getAllUsers(HttpServletRequest request);
     
     UserDto updateUserProfile(Long userId, UpdateProfileRequest request, HttpServletRequest request2);
+
+    @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER')")
+    List<UserDto> getAllUsersByTenantId(HttpServletRequest request);
 }
 

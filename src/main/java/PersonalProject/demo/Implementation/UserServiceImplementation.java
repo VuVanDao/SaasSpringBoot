@@ -11,6 +11,7 @@ import PersonalProject.demo.configuration.ApplicationProperties;
 import PersonalProject.demo.configuration.JwtProvider;
 import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
+import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.mapper.storeMapper;
 import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.TenantRepository;
@@ -27,7 +28,6 @@ public class UserServiceImplementation implements UserService {
     private final storeMapper storeMapper;
     private final ApplicationProperties applicationProperties;
     private final TenantRepository tenantRepository;
-    
 
     @Override
     public UserDto getUserFromJwtToken(String token) {
@@ -103,13 +103,13 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<UserDto> getAllUsers(HttpServletRequest request) {
-        
+        // dung cho admin nen lay tat ca user trong database
         Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
 
-        if (tenantId == null) {
-            throw new RuntimeException("Missing tenant");
+        if (tenantId == null || tenantId != 1) {
+            throw new RuntimeException("Missing tenant or you have not permission to access this resource");
         }
-        return userRepository.findAllUserByTenantId(tenantId).stream()
+        return userRepository.findAll().stream()
                 .map(user -> UserDto.builder()
                         .id(user.getId())
                         .email(user.getEmail())
@@ -149,6 +149,38 @@ public class UserServiceImplementation implements UserService {
                 .role(user.getRole())
                 .tenantId(tenantId)
                 .build();
+    }
+
+    @Override
+    public List<UserDto> getAllUsersByTenantId(HttpServletRequest request) {
+        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+        // day thuc ra la api endpoint de store manager lay tat ca user trong tenant cua no
+        if (tenantId == null) {
+            throw new RuntimeException("Missing tenant");
+        }
+        
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(email);
+        
+        if (currentUser == null) {
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
+        }
+        
+        if (currentUser.getTenantId() != tenantId) {
+            throw new TenantException(ErrorCode.Tenant_Exception);
+        }
+
+        return userRepository.findAllUserByTenantId(tenantId).stream()
+                .map(user -> UserDto.builder()
+                        .id(user.getId())
+                        .email(user.getEmail())
+                        .fullName(user.getFullName())
+                        .lastLogin(user.getLastLogin())
+                        .phone(user.getPhone())
+                        .role(user.getRole())
+                        .tenantId(tenantId)
+                        .build())
+                .toList();
     }
 }
          

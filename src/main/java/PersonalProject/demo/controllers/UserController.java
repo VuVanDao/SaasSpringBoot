@@ -57,10 +57,20 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public  ApiResponse<UserDto> updateUserProfile(@PathVariable Long id,@Valid @RequestBody UpdateProfileRequest entity ,  HttpServletRequest request2) {
+    public ApiResponse<UserDto> updateUserProfile(@PathVariable Long id,
+            @Valid @RequestBody UpdateProfileRequest entity, HttpServletRequest request2) {
         return ApiResponse.<UserDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(userService.updateUserProfile(id, entity, request2))
+                .build();
+    }
+    
+    @GetMapping("/store")
+    public ApiResponse<List<UserDto>> getAllUsersByTenantId(HttpServletRequest request) {
+        // day thuc ra la api endpoint de store manager lay tat ca user trong tenant cua no
+        return ApiResponse.<List<UserDto>>builder()
+                .code(HttpStatus.OK.value())
+                .result(userService.getAllUsersByTenantId(request))
                 .build();
     }
 }
