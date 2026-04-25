@@ -18,10 +18,11 @@ public interface StoreService {
 
     StoreDto getStoreById(Long id);
 
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
     List<StoreDto> getAllStores(HttpServletRequest request);
 
-    @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
-    StoreDto getStoreByAdmin();
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN','ROLE_STORE_MANAGER')")
+    StoreDto getStoreByStoreManager(HttpServletRequest request);
 
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
     StoreDto updateStore(Long id, UpdateStoreRequest storeDto, HttpServletRequest request);

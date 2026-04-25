@@ -81,27 +81,10 @@ public class StoreServiceImplementation implements StoreService {
     @Override
     @Transactional
     public List<StoreDto> getAllStores(HttpServletRequest request) {
+        // used for admin and super admin, get all store in the tenant
         Long tenantId = tenantUtil.validateTenant(request);
-        if (tenantId == null) {
-            throw new RuntimeException("Missing tenant");
-        }
-        List<Store> stores = storeRepositories.findAllStore(tenantId);
+        List<Store> stores = storeRepositories.findAll();
         return stores.stream().map(storeMapper::convertToDto).toList();
-    }
-
-    // CHECK: theem cais check tenantId
-    @Override
-    @Transactional
-    public StoreDto getStoreByAdmin() {
-        // chỉ có nhưng ai là chủ cửa hàng mới có thể dùng
-        UserDto currentUser = userService.getCurrentUser();
-        System.out.println("User ID: " + currentUser.getId());
-        // Store store = storeRepositories.findByStoreAdminId(currentUser.getId());
-        Store store = storeRepositories.findIncludeCategory(currentUser.getId());
-        if (store == null) {
-            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
-        }
-        return storeMapper.convertToDto(store);
     }
 
     @Override
@@ -200,6 +183,20 @@ public class StoreServiceImplementation implements StoreService {
         existingStore.setStoreStatus(storeStatus);
         Store updatedStore = storeRepositories.save(existingStore);
         return storeMapper.convertToDto(updatedStore);
+    }
+
+    @Override
+    @Transactional
+    public StoreDto getStoreByStoreManager(HttpServletRequest request) {
+        // chỉ có nhưng ai là chủ cửa hàng mới có thể dùng
+        UserDto currentUser = tenantUtil.validateTenantAndGetUser(request);
+        System.out.println("User ID: " + currentUser.getId());
+        // Store store = storeRepositories.findByStoreAdminId(currentUser.getId());
+        Store store = storeRepositories.findIncludeCategory(currentUser.getId());
+        if (store == null) {
+            throw new ResourceNotFoundException((ErrorCode.Resource_not_found));
+        }
+        return storeMapper.convertToDto(store);
     }
     
 }

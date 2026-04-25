@@ -50,22 +50,12 @@ public class StoreController {
                 .build();
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public ApiResponse<List<StoreDto>> getAllStores(HttpServletRequest request) {
         List<StoreDto> stores = storeService.getAllStores(request);
         return ApiResponse.<List<StoreDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(stores)
-                .build();
-    }
-
-    @GetMapping("/admin")
-    public ApiResponse<StoreDto> getStoreByAdmin(@RequestHeader(HeaderKey) String jwt) {
-        // Assuming the service uses the current user from JWT
-        StoreDto storeDto = storeService.getStoreByAdmin();
-        return ApiResponse.<StoreDto>builder()
-                .code(HttpStatus.OK.value())
-                .result(storeDto)
                 .build();
     }
 
@@ -98,12 +88,23 @@ public class StoreController {
     }
 
     @PatchMapping("/update_status/{id}")
-    public ApiResponse<StoreDto> updateStatusStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeStatus, HttpServletRequest request) {
+    public ApiResponse<StoreDto> updateStatusStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeStatus,
+            HttpServletRequest request) {
         StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus(), request);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .message("Update store status complete")
                 .result(updatedStore)
+                .build();
+    }
+    
+    @GetMapping("/store-manager")
+    public ApiResponse<StoreDto> getStoreByStoreManager(@RequestHeader(HeaderKey) String jwt, HttpServletRequest request) {
+        // Assuming the service uses the current user from JWT
+        StoreDto storeDto = storeService.getStoreByStoreManager(request);
+        return ApiResponse.<StoreDto>builder()
+                .code(HttpStatus.OK.value())
+                .result(storeDto)
                 .build();
     }
 }

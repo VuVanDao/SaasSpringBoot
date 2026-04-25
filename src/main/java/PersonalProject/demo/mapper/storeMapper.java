@@ -29,13 +29,13 @@ public class storeMapper {
                 .storeContact(store.getStoreContact())
                 .storeStatus(store.getStoreStatus())
                 .build();
-        if (storeDto.getCategories() != null) {
+        if (store.getCategories() != null) {
             storeDto.setCategories(store.getCategories().stream().map(category -> CategoryResponse.builder()
                     .id(category.getId())
                     .name(category.getName())
                     .build()).collect(Collectors.toSet()));
         }
-        if (storeDto.getBranches() != null) {
+        if (store.getBranches() != null) {
             storeDto.setBranches(store.getBranches().stream().map(branchMapper::convertToDto).collect(Collectors.toList()));
         }
         return storeDto;
