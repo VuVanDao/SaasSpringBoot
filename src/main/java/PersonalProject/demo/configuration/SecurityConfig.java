@@ -29,6 +29,7 @@ public class SecurityConfig {
     private final ApplicationProperties _ApplicationProperties;
     private final String[] Public_Post_Endpoint = { "/auth/sign_up" ,"/auth/login","/auth/refresh"}; 
     private final String[] Public_Get_Endpoint = { "/products/store/{storeId}" ,"/products/search" ,"/products/{id}","/categories","/stores" }; 
+    private final String[] Public_View_Api_Endpoint = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api-docs" }; 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
@@ -36,6 +37,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(request -> request
                     .requestMatchers(HttpMethod.POST, Public_Post_Endpoint).permitAll()
                     .requestMatchers(HttpMethod.GET, Public_Get_Endpoint).permitAll()
+                        .requestMatchers(Public_View_Api_Endpoint).permitAll()
+                    
                     // .requestMatchers("/stores/**").permitAll()
                         // .requestMatchers("/error").permitAll()
                         /*
