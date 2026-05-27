@@ -20,7 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
-@Configuration
+@Configuration // 1. Đây là cuốn Menu của nhà hàng Spring
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
@@ -29,8 +29,19 @@ public class SecurityConfig {
     private final ApplicationProperties _ApplicationProperties;
     private final String[] Public_Post_Endpoint = { "/auth/sign_up" ,"/auth/login","/auth/refresh"}; 
     private final String[] Public_Get_Endpoint = { "/products/store/{storeId}" ,"/products/search" ,"/products/{id}","/categories","/stores" }; 
-    private final String[] Public_View_Api_Endpoint = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/api-docs" }; 
-    @Bean
+    private final String[] Public_View_Api_Endpoint = { "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+            "/api-docs" };
+
+    /**
+     * Khi ứng dụng Spring Boot của bạn khởi động:
+     * Nó quét qua cuốn menu SecurityConfig.
+     * Nó thấy hàm securityFilterChain() có gắn biển @Bean.
+     * Nó tự động chạy hàm này, lấy được đối tượng securityFilterChain đã cấu hình xong xuôi.
+     * Nó cất đối tượng này vào kho (Spring Container).
+     * 
+     * Sau này, ở bất kỳ chỗ nào trong ứng dụng, bạn chỉ cần gọi nó ra bằng @Autowired mà không cần phải new lại:
+     */
+    @Bean // 2. "Này Spring, hãy làm món này và cất vào kho nhé!"
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

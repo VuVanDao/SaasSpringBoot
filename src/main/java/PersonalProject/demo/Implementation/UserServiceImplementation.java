@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import PersonalProject.demo.Dto.Request.UpdateProfileRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
@@ -48,6 +49,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);

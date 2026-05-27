@@ -16,6 +16,7 @@ import PersonalProject.demo.repositories.CustomerRepository;
 import PersonalProject.demo.services.CustomerService;
 import PersonalProject.demo.utils.TenantUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,6 +42,7 @@ public class CustomerServiceImplementation implements CustomerService {
         return customerMapper.toCustomerDto(customer);
     }
 
+    // @Transactional
     @Override
     public List<CustomerDto> getAllCustomersByTenantId(HttpServletRequest request) {
         Long tenant_id = tenantUtil.validateTenant(request);
