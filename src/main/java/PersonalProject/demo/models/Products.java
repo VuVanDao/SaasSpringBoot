@@ -51,4 +51,6 @@ public class Products extends AbstractTenantModel {
     )
     Set<Category> categories = new HashSet<>();
 
+    @OneToMany(mappedBy = "products")
+    List<OrderItem> orderItems;
 }
