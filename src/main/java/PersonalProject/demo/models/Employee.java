@@ -2,7 +2,7 @@ package PersonalProject.demo.models;
 
 import java.math.BigDecimal;
 
-import PersonalProject.demo.domain.EmployeeRole;
+import PersonalProject.demo.Enums.EmployeeRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

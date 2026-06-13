@@ -5,8 +5,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
 import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.configuration.ApplicationProperties;
-import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;

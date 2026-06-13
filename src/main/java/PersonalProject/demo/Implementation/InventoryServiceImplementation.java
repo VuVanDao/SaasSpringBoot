@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import PersonalProject.demo.Dto.Request.CreateInventoryRequest;
 import PersonalProject.demo.Dto.Request.UpdateInventoryRequest;
 import PersonalProject.demo.Dto.Response.InventoryDto;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.mapper.BranchMapper;

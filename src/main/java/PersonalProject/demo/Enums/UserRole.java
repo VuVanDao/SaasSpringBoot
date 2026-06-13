@@ -1,4 +1,4 @@
-package PersonalProject.demo.domain;
+package PersonalProject.demo.Enums;
 
 public enum UserRole {
     ROLE_USER, ROLE_ADMIN,

@@ -2,7 +2,7 @@ package PersonalProject.demo.Dto.Request;
 
 import java.time.LocalDateTime;
 
-import PersonalProject.demo.domain.TenantStatus;
+import PersonalProject.demo.Enums.TenantStatus;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

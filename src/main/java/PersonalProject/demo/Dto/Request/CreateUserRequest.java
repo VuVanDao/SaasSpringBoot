@@ -2,7 +2,7 @@ package PersonalProject.demo.Dto.Request;
 
 import java.time.LocalDateTime;
 
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

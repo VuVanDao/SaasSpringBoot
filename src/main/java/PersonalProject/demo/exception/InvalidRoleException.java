@@ -1,6 +1,6 @@
 package PersonalProject.demo.exception;
 
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 
 public class InvalidRoleException extends RuntimeException{
     private ErrorCode errorCode;

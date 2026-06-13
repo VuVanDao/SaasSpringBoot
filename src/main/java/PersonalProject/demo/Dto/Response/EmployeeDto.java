@@ -2,7 +2,7 @@ package PersonalProject.demo.Dto.Response;
 
 import java.math.BigDecimal;
 
-import PersonalProject.demo.domain.EmployeeRole;
+import PersonalProject.demo.Enums.EmployeeRole;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

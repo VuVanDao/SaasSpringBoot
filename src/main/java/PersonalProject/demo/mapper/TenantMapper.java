@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 
 import PersonalProject.demo.Dto.Request.CreateTenantRequest;
 import PersonalProject.demo.Dto.Response.TenantDto;
-import PersonalProject.demo.domain.TenantStatus;
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.TenantStatus;
+import PersonalProject.demo.Enums.UserRole;
 import PersonalProject.demo.models.Tenant;
 import lombok.RequiredArgsConstructor;
 

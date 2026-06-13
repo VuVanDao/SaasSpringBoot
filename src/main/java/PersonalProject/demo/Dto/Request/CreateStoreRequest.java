@@ -4,8 +4,8 @@ import java.util.List;
 
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Dto.Response.UserDto;
-import PersonalProject.demo.domain.StoreContact;
-import PersonalProject.demo.domain.StoreStatus;
+import PersonalProject.demo.Enums.StoreContact;
+import PersonalProject.demo.Enums.StoreStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

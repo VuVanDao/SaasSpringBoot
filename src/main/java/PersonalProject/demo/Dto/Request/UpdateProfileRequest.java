@@ -1,6 +1,6 @@
 package PersonalProject.demo.Dto.Request;
 
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.UserRole;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

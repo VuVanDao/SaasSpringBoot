@@ -3,8 +3,8 @@ package PersonalProject.demo.models;
 import java.util.List;
 import java.util.Set;
 
-import PersonalProject.demo.domain.StoreContact;
-import PersonalProject.demo.domain.StoreStatus;
+import PersonalProject.demo.Enums.StoreContact;
+import PersonalProject.demo.Enums.StoreStatus;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

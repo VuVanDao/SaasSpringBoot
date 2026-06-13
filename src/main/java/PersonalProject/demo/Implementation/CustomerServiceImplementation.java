@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import PersonalProject.demo.Dto.Request.CreateCustomerRequest;
 import PersonalProject.demo.Dto.Request.UpdateCustomerRequest;
 import PersonalProject.demo.Dto.Response.CustomerDto;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.CustomerMapper;
 import PersonalProject.demo.models.Customer;

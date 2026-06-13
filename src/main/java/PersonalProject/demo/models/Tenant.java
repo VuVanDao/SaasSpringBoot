@@ -2,7 +2,7 @@ package PersonalProject.demo.models;
 
 import java.time.LocalDateTime;
 
-import PersonalProject.demo.domain.TenantStatus;
+import PersonalProject.demo.Enums.TenantStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

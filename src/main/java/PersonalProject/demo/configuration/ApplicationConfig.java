@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import PersonalProject.demo.domain.TenantStatus;
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.TenantStatus;
+import PersonalProject.demo.Enums.UserRole;
 import PersonalProject.demo.models.Tenant;
 import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.TenantRepository;

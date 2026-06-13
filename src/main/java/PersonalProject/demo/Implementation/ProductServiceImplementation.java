@@ -14,7 +14,7 @@ import PersonalProject.demo.Dto.Request.UpdateProductRequest;
 import PersonalProject.demo.Dto.Response.ProductDto;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Dto.Response.UserDto;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.ProductMapper;
 import PersonalProject.demo.models.Category;

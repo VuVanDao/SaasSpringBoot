@@ -1,4 +1,4 @@
-package PersonalProject.demo.domain;
+package PersonalProject.demo.Enums;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
