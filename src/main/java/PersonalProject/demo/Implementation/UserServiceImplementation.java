@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import PersonalProject.demo.Dto.Request.UpdateProfileRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.configuration.ApplicationProperties;
 import PersonalProject.demo.configuration.JwtProvider;
-import PersonalProject.demo.domain.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.mapper.storeMapper;

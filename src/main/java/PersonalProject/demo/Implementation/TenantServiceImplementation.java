@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import PersonalProject.demo.Dto.Request.CreateTenantRequest;
 import PersonalProject.demo.Dto.Response.TenantDto;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.mapper.TenantMapper;
 import PersonalProject.demo.models.Tenant;

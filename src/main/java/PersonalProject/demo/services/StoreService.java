@@ -9,7 +9,7 @@ import PersonalProject.demo.Dto.Request.CreateStoreRequest;
 import PersonalProject.demo.Dto.Request.CreateUserRequest;
 import PersonalProject.demo.Dto.Request.UpdateStoreRequest;
 import PersonalProject.demo.Dto.Response.StoreDto;
-import PersonalProject.demo.domain.StoreStatus;
+import PersonalProject.demo.Enums.StoreStatus;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface StoreService {

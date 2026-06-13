@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;

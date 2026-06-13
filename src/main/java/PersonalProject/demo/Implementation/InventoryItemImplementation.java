@@ -11,7 +11,7 @@ import PersonalProject.demo.Dto.Request.CreateInventoryItemRequest;
 import PersonalProject.demo.Dto.Response.InventoryItemInventory;
 import PersonalProject.demo.Dto.Response.InventoryItemProduct;
 import PersonalProject.demo.Dto.Response.ProductDto;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.models.Inventory;
 import PersonalProject.demo.models.InventoryItem;

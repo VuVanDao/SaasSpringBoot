@@ -3,8 +3,8 @@ package PersonalProject.demo.Dto.Response;
 import java.util.List;
 import java.util.Set;
 
-import PersonalProject.demo.domain.StoreContact;
-import PersonalProject.demo.domain.StoreStatus;
+import PersonalProject.demo.Enums.StoreContact;
+import PersonalProject.demo.Enums.StoreStatus;
 import PersonalProject.demo.models.Category;
 import lombok.Builder;
 import lombok.Data;

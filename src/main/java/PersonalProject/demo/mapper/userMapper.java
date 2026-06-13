@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import PersonalProject.demo.Dto.Request.CreateUserRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
-import PersonalProject.demo.domain.ErrorCode;
-import PersonalProject.demo.domain.UserRole;
+import PersonalProject.demo.Enums.ErrorCode;
+import PersonalProject.demo.Enums.UserRole;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.models.Tenant;
 import PersonalProject.demo.models.User;

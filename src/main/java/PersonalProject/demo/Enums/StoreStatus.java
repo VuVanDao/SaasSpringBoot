@@ -1,4 +1,4 @@
-package PersonalProject.demo.domain;
+package PersonalProject.demo.Enums;
 
 public enum StoreStatus {
    ACTIVE,BLOCKED,PENDING

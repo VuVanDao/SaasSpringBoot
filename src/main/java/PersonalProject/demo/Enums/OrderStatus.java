@@ -1,4 +1,4 @@
-package PersonalProject.demo.domain;
+package PersonalProject.demo.Enums;
 
 public enum OrderStatus {
     PENDING, // chờ xử lý

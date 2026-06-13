@@ -1,4 +1,4 @@
-package PersonalProject.demo.domain;
+package PersonalProject.demo.Enums;
 
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Email;

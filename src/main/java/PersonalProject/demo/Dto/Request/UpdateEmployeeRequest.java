@@ -2,7 +2,7 @@ package PersonalProject.demo.Dto.Request;
 
 import java.math.BigDecimal;
 
-import PersonalProject.demo.domain.EmployeeRole;
+import PersonalProject.demo.Enums.EmployeeRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

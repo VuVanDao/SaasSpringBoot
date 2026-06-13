@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import PersonalProject.demo.Dto.Response.ApiResponse;
-import PersonalProject.demo.domain.ErrorCode;
+import PersonalProject.demo.Enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
