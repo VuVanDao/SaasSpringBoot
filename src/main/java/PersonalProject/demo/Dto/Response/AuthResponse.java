@@ -1,5 +1,7 @@
 package PersonalProject.demo.Dto.Response;
 
+import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +11,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthResponse {
-    String jwt;//accessToken
+    String accessToken;//accessToken
     String refreshToken;
     String message;
     UserDto userInfo;
+    LocalDateTime accessTokenExpiredAt;
+    LocalDateTime refreshTokenExpiredAt;
 }

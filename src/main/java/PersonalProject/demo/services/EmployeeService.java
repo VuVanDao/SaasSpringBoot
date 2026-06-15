@@ -7,28 +7,26 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import PersonalProject.demo.Dto.Request.CreateEmployeeRequest;
 import PersonalProject.demo.Dto.Request.UpdateEmployeeRequest;
 import PersonalProject.demo.Dto.Response.EmployeeDto;
-import jakarta.servlet.http.HttpServletRequest;
 
 public interface EmployeeService {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    EmployeeDto createEmployee(CreateEmployeeRequest createEmployeeRequest, HttpServletRequest request);
+    EmployeeDto createEmployee(CreateEmployeeRequest createEmployeeRequest, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    List<EmployeeDto> getAllEmployeesOfAStore(Long store_id, HttpServletRequest request);
+    List<EmployeeDto> getAllEmployeesOfAStore(Long store_id, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    EmployeeDto getEmployeeById(Long id, HttpServletRequest request);
+    EmployeeDto getEmployeeById(Long id, Long tenantId);
     
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    EmployeeDto getEmployeeByUserId(Long userId, HttpServletRequest request);
+    EmployeeDto getEmployeeByUserId(Long userId, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    List<EmployeeDto> getEmployeeByBranchId(Long branchId, HttpServletRequest request);
+    List<EmployeeDto> getEmployeeByBranchId(Long branchId, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    EmployeeDto UpdateEmployee(Long employeeId, UpdateEmployeeRequest updateEmployeeRequest,
-            HttpServletRequest request);
+    EmployeeDto UpdateEmployee(Long employeeId, UpdateEmployeeRequest updateEmployeeRequest, Long tenantId);
     
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    void deleteEmployee(Long employeeId, HttpServletRequest request);
+    void deleteEmployee(Long employeeId, Long tenantId);
 }

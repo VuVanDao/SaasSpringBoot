@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import PersonalProject.demo.Dto.Request.UpdateProfileRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 public interface UserService {
@@ -21,11 +20,11 @@ public interface UserService {
     UserDto getUserById(Long id);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
-    List<UserDto> getAllUsers(HttpServletRequest request);
+    List<UserDto> getAllUsers(Long tenantId);
     
-    UserDto updateUserProfile(Long userId, UpdateProfileRequest request, HttpServletRequest request2);
+    UserDto updateUserProfile(Long userId, UpdateProfileRequest request, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER')")
-    List<UserDto> getAllUsersByTenantId(HttpServletRequest request);
+    List<UserDto> getAllUsersByTenantId(Long tenantId);
 }
 

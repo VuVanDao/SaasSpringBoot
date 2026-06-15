@@ -1,7 +1,9 @@
 package PersonalProject.demo.Implementation;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,25 +48,8 @@ public class AuthServiceImplementation implements AuthRepositories {
         }
         User user = userMapper.convertToModel(request);
         this.userRepository.save(user);
-        /*
-        Dòng code này giống như việc bạn tạo ra một chiếc "Thẻ tạm trú" cho người dùng sau khi họ đã xuất trình đúng giấy tờ.
-        - request.getEmail(),      // Principal: Định danh (Tên đăng nhập/Email)
-        - request.getPassword(),   // Credentials: Mật khẩu (thường để null sau khi xác thực xong để bảo mật)
-        - user.getAuthorities()    // Authorities: Danh sách các quyền (chìa khóa các phòng) mà người dùng này có thể truy cập.
-        + Mục đích: Đóng gói tất cả thông tin quan trọng của người dùng vào một đối tượng duy nhất gọi là Authentication.
-         */
-        Authentication auth = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword(),
-                user.getAuthorities());
-        System.out.println("auth: " + auth);
-        /*
-        Nếu dòng trên là tạo thẻ, thì dòng này là "Ghim chiếc thẻ đó lên ngực áo" của người dùng.
-        - Khi bạn gọi dòng này, Spring sẽ lưu thông tin vào một nơi gọi là ThreadLocal.
-        - Ở bất kỳ đâu trong code (Controller, Service), Spring có thể "liếc mắt" nhìn vào cái thẻ này để biết: "À, ông này có quyền ADMIN, cho phép vào hàm xóa dữ liệu
-        - Bạn có thể lấy lại thông tin người dùng đang đăng nhập ở bất cứ đâu mà không cần truyền tham số qua từng hàm, chỉ bằng cách gọi SecurityContextHolder.getContext().getAuthentication()
-        - Trong suốt một Request (từ lúc gửi lên đến lúc nhận phản hồi), Spring sẽ nhớ mặt người dùng này.
-        */
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        String jwt = jwtProvider.generateToken(auth);// access token
+
+        String jwt = jwtProvider.generateToken(user);// access token
         String refreshToken = jwtProvider.generateRefreshToken();
 
         // Lưu Refresh Token vào DB
@@ -74,7 +59,7 @@ public class AuthServiceImplementation implements AuthRepositories {
                 .expiryDate(Instant.now().plusMillis(JwtConstant.REFRESH_TOKEN_EXPIRATION))
                 .build();
         refreshTokenRepository.save(rt);
-        return AuthResponse.builder().jwt(jwt).refreshToken(refreshToken).message("sign up successful").userInfo(userMapper.convertToDto(user)).build();
+        return AuthResponse.builder().accessToken(jwt).refreshToken(refreshToken).message("sign up successful").userInfo(userMapper.convertToDto(user)).build();
     }
 
     @Override
@@ -83,18 +68,15 @@ public class AuthServiceImplementation implements AuthRepositories {
 
         String email = userDto.getEmail();
         String password = userDto.getPassword();
-        System.out.println("email: " + email);
-        System.out.println("password: " + password);
 
-        Authentication authentication = authenticate(email, password);
+        authenticate(email, password);
         User user = userRepository.findByEmail(email);
         // Cập nhật thời gian đăng nhập cuối cùng của user
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // generate accessToken và refreshToken
-        String accessToken = jwtProvider.generateToken(authentication);// access token
+        String accessToken = jwtProvider.generateToken(user);// access token
         String refreshToken = jwtProvider.generateRefreshToken();// refresh token
 
         // Lưu Refresh Token vào DB
@@ -104,8 +86,20 @@ public class AuthServiceImplementation implements AuthRepositories {
                 .expiryDate(Instant.now().plusMillis(JwtConstant.REFRESH_TOKEN_EXPIRATION))
                 .build();
         refreshTokenRepository.save(rt);
-        
-        return AuthResponse.builder().jwt(accessToken).refreshToken(refreshToken).message("login successful").userInfo(userMapper.convertToDto(user)).build();
+
+        LocalDateTime accessTokenExpiredAt = LocalDateTime.now().plus(JwtConstant.ACCESS_TOKEN_EXPIRATION,
+                ChronoUnit.MILLIS);
+        LocalDateTime refreshTokenExpiredAt = LocalDateTime.now().plus(JwtConstant.REFRESH_TOKEN_EXPIRATION,
+                ChronoUnit.MILLIS);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .message("login successful")
+                .userInfo(userMapper.convertToDto(user))
+                .accessTokenExpiredAt(accessTokenExpiredAt)
+                .refreshTokenExpiredAt(refreshTokenExpiredAt)
+                .build();
     }
 
     private Authentication authenticate(String email, String password) {
@@ -135,11 +129,10 @@ public class AuthServiceImplementation implements AuthRepositories {
             .map(RefreshToken::getUser)
             .map(user -> {
                 // Tạo Access Token MỚI
-                Authentication auth = new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities());
-                String newAccessToken = jwtProvider.generateToken(auth);
+                String newAccessToken = jwtProvider.generateToken(user);
                 
                 return AuthResponse.builder()
-                        .jwt(newAccessToken)
+                        .accessToken(newAccessToken)
                         .refreshToken(requestRefreshToken) // Có thể trả lại RT cũ hoặc xoay vòng (Rotate RT)
                         .message("Token refreshed")
                         .build();

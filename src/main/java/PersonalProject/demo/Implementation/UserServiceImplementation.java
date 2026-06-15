@@ -9,16 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import PersonalProject.demo.Dto.Request.UpdateProfileRequest;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.Enums.ErrorCode;
-import PersonalProject.demo.configuration.ApplicationProperties;
 import PersonalProject.demo.configuration.JwtProvider;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.mapper.storeMapper;
 import PersonalProject.demo.models.User;
-import PersonalProject.demo.repositories.TenantRepository;
 import PersonalProject.demo.repositories.UserRepository;
 import PersonalProject.demo.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,8 +24,6 @@ public class UserServiceImplementation implements UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final storeMapper storeMapper;
-    private final ApplicationProperties applicationProperties;
-    private final TenantRepository tenantRepository;
 
     @Override
     public UserDto getUserFromJwtToken(String token) {
@@ -104,10 +99,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers(HttpServletRequest request) {
+    public List<UserDto> getAllUsers(Long tenantId) {
         // dung cho admin nen lay tat ca user trong database
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
-
         if (tenantId == null || tenantId != 1) {
             throw new RuntimeException("Missing tenant or you have not permission to access this resource");
         }
@@ -125,8 +118,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserDto updateUserProfile(Long userId, UpdateProfileRequest request,  HttpServletRequest request2) {
-        Long tenantId = Long.valueOf(request2.getHeader(applicationProperties.getHeaderTenant()));
+    public UserDto updateUserProfile(Long userId, UpdateProfileRequest request, Long tenantId) {
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");
         }
@@ -154,8 +146,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsersByTenantId(HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+    public List<UserDto> getAllUsersByTenantId(Long tenantId) {
         // day thuc ra la api endpoint de store manager lay tat ca user trong tenant cua no
         if (tenantId == null) {
             throw new RuntimeException("Missing tenant");

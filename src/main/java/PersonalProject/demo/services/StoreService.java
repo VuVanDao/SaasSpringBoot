@@ -1,37 +1,34 @@
 package PersonalProject.demo.services;
 
-
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import PersonalProject.demo.Dto.Request.CreateStoreRequest;
-import PersonalProject.demo.Dto.Request.CreateUserRequest;
 import PersonalProject.demo.Dto.Request.UpdateStoreRequest;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Enums.StoreStatus;
-import jakarta.servlet.http.HttpServletRequest;
 
 public interface StoreService {
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
-    StoreDto createStore(CreateStoreRequest storeDto, HttpServletRequest request);
+    StoreDto createStore(CreateStoreRequest storeDto, Long tenantId);
 
     StoreDto getStoreById(Long id);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
-    List<StoreDto> getAllStores(HttpServletRequest request);
+    List<StoreDto> getAllStores(Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN','ROLE_STORE_MANAGER')")
-    StoreDto getStoreByStoreManager(HttpServletRequest request);
+    StoreDto getStoreByStoreManager(Long tenantId);
 
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
-    StoreDto updateStore(Long id, UpdateStoreRequest storeDto, HttpServletRequest request);
+    StoreDto updateStore(Long id, UpdateStoreRequest storeDto, Long tenantId);
 
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
-    void deleteStore(Long id,HttpServletRequest request);
+    void deleteStore(Long id, Long tenantId);
 
-    StoreDto getStoreByEmployee(HttpServletRequest request);
+    StoreDto getStoreByEmployee(Long tenantId);
     
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
-    StoreDto moderateStore(Long id, StoreStatus storeStatus, HttpServletRequest request);
+    StoreDto moderateStore(Long id, StoreStatus storeStatus, Long tenantId);
 }
