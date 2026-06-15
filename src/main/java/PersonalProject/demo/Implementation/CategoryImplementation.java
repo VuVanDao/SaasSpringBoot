@@ -4,10 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import PersonalProject.demo.Dto.Request.CreateCategoryRequest;
@@ -15,16 +13,13 @@ import PersonalProject.demo.Dto.Response.CategoryResponse;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.Enums.UserRole;
-import PersonalProject.demo.configuration.ApplicationProperties;
 import PersonalProject.demo.exception.ResourceNotFoundException;
 import PersonalProject.demo.models.Category;
 import PersonalProject.demo.models.Store;
-import PersonalProject.demo.models.User;
 import PersonalProject.demo.repositories.CategoryRepositories;
 import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.services.CategoryService;
 import PersonalProject.demo.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +29,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CategoryImplementation implements CategoryService {
     private final CategoryRepositories categoryRepositories;
-    private final ApplicationProperties applicationProperties;
     private final StoreRepositories storeRepositories;
     private final UserService userService;
 
     @Override
     @Transactional
-    public CategoryResponse createCategory(CreateCategoryRequest request, HttpServletRequest request2) {
+    public CategoryResponse createCategory(CreateCategoryRequest request, Long tenantId) {
         System.out.println("-------------------CategoryImplementation.createCategory-------------------------");
-        Long tenantId = Long.valueOf(request2.getHeader(applicationProperties.getHeaderTenant()));
+        if (tenantId == null) {
+            throw new RuntimeException("Missing tenant");
+        }
         UserDto user = userService.getCurrentUser();
 
-        if (user.getTenantId() != tenantId) {
+        if (!user.getTenantId().equals(tenantId)) {
             throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
         }
         // chia luồng: admin tạo cate public và store manager tạo 
@@ -66,37 +62,33 @@ public class CategoryImplementation implements CategoryService {
                 throw new RuntimeException("Error when create category");
             }
             // tìm store
-            List<Store> stores = storeRepositories.findAllByIdAndTenantId(request.getStoreId(),tenantId);
+            List<Store> stores = storeRepositories.findAllByIdAndTenantId(request.getStoreId(), tenantId);
             // truwong hop ko tim thay store
-            if (stores == null || stores.size() == 0) {
-                log.info("Error in stores == null || stores.size() == 0");
+            if (stores == null || stores.isEmpty()) {
+                log.info("Error in stores == null || stores.isEmpty()");
                 throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
             }
             // truong hop store tenantID ko trung tenantID
-            if (stores != null && stores.size() > 0) {
-                Long StoreTenantId = stores.get(0).getTenantId();
-                if (StoreTenantId != tenantId || user.getTenantId() != StoreTenantId) {
-                    throw new AuthorizationDeniedException(ErrorCode.AuthorizationDeniedException.getMessage());
-                }
+            Long StoreTenantId = stores.get(0).getTenantId();
+            if (!StoreTenantId.equals(tenantId) || !user.getTenantId().equals(StoreTenantId)) {
+                throw new AuthorizationDeniedException(ErrorCode.AuthorizationDeniedException.getMessage());
             }
             Category newCategory = Category.builder().name(request.getName()).tenantId(tenantId)
                     .isSystemDefault(false).build();
             categoryRepositories.save(newCategory);
 
             // Thiết lập mối quan hệ với stores
-            if (stores != null && !stores.isEmpty()) {
-                newCategory.setStores(stores);
-                
-                // Cập nhật mối quan hệ từ phía Store
-                for (Store store : stores) {
-                    if (store.getCategories() == null) {
-                        store.setCategories(new HashSet<>());
-                    }
-                    store.getCategories().add(newCategory);
-                    
-                    // Cập nhật lại store
-                    storeRepositories.save(store);
+            newCategory.setStores(stores);
+            
+            // Cập nhật mối quan hệ từ phía Store
+            for (Store store : stores) {
+                if (store.getCategories() == null) {
+                    store.setCategories(new HashSet<>());
                 }
+                store.getCategories().add(newCategory);
+                
+                // Cập nhật lại store
+                storeRepositories.save(store);
             }
             return CategoryResponse.builder()
                 .name(newCategory.getName())
@@ -107,24 +99,22 @@ public class CategoryImplementation implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories(HttpServletRequest request) {
-
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+    public List<CategoryResponse> getAllCategories(Long tenantId) {
+        if (tenantId == null) {
+            throw new RuntimeException("Missing tenant");
+        }
         UserDto user = userService.getCurrentUser();
 
-        if (user.getTenantId() != tenantId) {
+        if (!user.getTenantId().equals(tenantId)) {
             throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
         }
         System.out.println("------------------USER LOGIN________"+user);
         if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
             // Nếu là store admin, lấy cả categories công khai và categories của store riêng
-            // 1. Tìm store thuộc tenant này (Giả sử 1 tenant quản lý 1 store, hoặc lấy store đầu tiên)
-            // Nếu user quản lý nhiều store, bạn có thể cần truyền storeId từ request hoặc query theo list storeId.
             List<Store> stores = storeRepositories.findAllByTenantId(tenantId);
             if (stores.isEmpty()) {
                 return Collections.emptyList();
             }
-            // Lấy ID của store (ở đây ví dụ lấy store đầu tiên, bạn có thể logic phức tạp hơn nếu cần)
             Long storeId = stores.get(0).getId();
             List<Category> categories = categoryRepositories.findCategoriesByStoreId(storeId);
             return categories.stream()
@@ -147,11 +137,13 @@ public class CategoryImplementation implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryResponse getCategoryById(Long id, HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+    public CategoryResponse getCategoryById(Long id, Long tenantId) {
+        if (tenantId == null) {
+            throw new RuntimeException("Missing tenant");
+        }
         UserDto user = userService.getCurrentUser();
 
-        if (user.getTenantId() != tenantId) {
+        if (!user.getTenantId().equals(tenantId)) {
             throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
         }
         Category existingCategory = categoryRepositories.findById(id)
@@ -171,11 +163,13 @@ public class CategoryImplementation implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategoryById(Long id, HttpServletRequest request) {
-        Long tenantId = Long.valueOf(request.getHeader(applicationProperties.getHeaderTenant()));
+    public void deleteCategoryById(Long id, Long tenantId) {
+        if (tenantId == null) {
+            throw new RuntimeException("Missing tenant");
+        }
         UserDto user = userService.getCurrentUser();
 
-        if (user.getTenantId() != tenantId) {
+        if (!user.getTenantId().equals(tenantId)) {
             throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());
         }
         Category existingCategory = categoryRepositories.findById(id)
@@ -205,6 +199,7 @@ public class CategoryImplementation implements CategoryService {
         }
         throw new BadCredentialsException("Không có quyền xóa category!");
     }
+
     // Helper method để xóa category và cleanup relationship
     private void deleteCategoryAndCleanRelationship(Category categoryToDelete) {
         // Trước tiên, loại bỏ category khỏi các store liên quan

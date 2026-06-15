@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import PersonalProject.demo.Dto.Request.CreateBranchRequest;
 import PersonalProject.demo.Dto.Request.UpdateBranchRequest;
 import PersonalProject.demo.Dto.Response.BranchDto;
-import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.Enums.UserRole;
 import PersonalProject.demo.exception.InvalidRoleException;
@@ -25,7 +24,6 @@ import PersonalProject.demo.repositories.StoreRepositories;
 import PersonalProject.demo.repositories.UserRepository;
 import PersonalProject.demo.services.BranchService;
 import PersonalProject.demo.utils.TenantUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -41,8 +39,8 @@ public class BranchServiceImplementation implements BranchService {
     private final userMapper userMapper;
 
     @Override
-    public BranchDto createBranch(CreateBranchRequest request, HttpServletRequest request2) {
-        Long tenantId = tenantUtil.validateTenant(request2);
+    public BranchDto createBranch(CreateBranchRequest request, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
         User manager = userRepository.findById(request.getManagerId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
         if (manager.getRole() != UserRole.ROLE_BRANCH_MANAGER) {
@@ -62,30 +60,30 @@ public class BranchServiceImplementation implements BranchService {
         if (store.getTenantId() != tenantId) {
             throw new UserNotUnderPermission(ErrorCode.Store_Not_Under_Your_Permission);
         }
-        Branch branch = branchMapper.convertToModel(request, manager,store);
+        Branch branch = branchMapper.convertToModel(request, manager, store);
         branchRepository.save(branch);
         return branchMapper.convertToDto(branch);
     }
 
     @Override
-    public BranchDto getBranchById(Long id, HttpServletRequest request2) {
-        Long tenantId = tenantUtil.validateTenant(request2);
+    public BranchDto getBranchById(Long id, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
         Branch branch = branchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return branchMapper.convertToDto(branch);
     }
 
     @Override
-    public List<BranchDto> getAllBranches(HttpServletRequest request2) {
-        Long tenantId = tenantUtil.validateTenant(request2);
+    public List<BranchDto> getAllBranches(Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
         return branchRepository.findAll().stream()
                 .map(branchMapper::convertToDto)
                 .toList();
     }
 
     @Override
-    public BranchDto updateBranch(Long id, UpdateBranchRequest request, HttpServletRequest request2) {
-        Long tenantId = tenantUtil.validateTenant(request2);
+    public BranchDto updateBranch(Long id, UpdateBranchRequest request, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
 
         Branch branch = branchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
@@ -115,15 +113,15 @@ public class BranchServiceImplementation implements BranchService {
         if (store.getTenantId() != tenantId) {
             throw new UserNotUnderPermission(ErrorCode.Store_Not_Under_Your_Permission);
         }
-        branchMapper.convertToModel(request, branch, manager,store);
+        branchMapper.convertToModel(request, branch, manager, store);
         branchRepository.save(branch);
         return branchMapper.convertToDto(branch);
     }
 
     @Override
     @Transactional
-    public void deleteBranch(Long id, HttpServletRequest request2) {
-        Long tenantId = tenantUtil.validateTenant(request2);
+    public void deleteBranch(Long id, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
         Branch branch = branchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         if (branch.getTenantId() != tenantId) {
@@ -136,14 +134,4 @@ public class BranchServiceImplementation implements BranchService {
         branch.setManager(null);
         branchRepository.delete(branch);
     }
-
-    // @Override
-    // public List<StoreDto> getAllStoresByBranchId(Long branchId) {
-    //     Branch branch = branchRepository.findById(branchId)
-    //             .orElseThrow(() -> new ResourceNotFoundException("Branch not found with id: " + branchId));
-
-    //     return storeRepositories.findByBranchId(branch.getId()).stream()
-    //             .map(storeMapper::convertToDto)
-    //             .toList();
-    // }
 }

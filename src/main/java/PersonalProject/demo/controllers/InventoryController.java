@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,19 +18,19 @@ import PersonalProject.demo.Dto.Request.UpdateInventoryRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.InventoryDto;
 import PersonalProject.demo.services.InventoryService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
-
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ApiResponse<InventoryDto> createInventory(@RequestBody CreateInventoryRequest request, HttpServletRequest request2) {
-        InventoryDto inventory = inventoryService.createInventory(request, request2);
+    public ApiResponse<InventoryDto> createInventory(
+            @RequestBody CreateInventoryRequest request,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        InventoryDto inventory = inventoryService.createInventory(request, tenantId);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(inventory)
@@ -38,8 +39,11 @@ public class InventoryController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<InventoryDto> updateInventory(@PathVariable Long id, @RequestBody UpdateInventoryRequest request, HttpServletRequest request2) {
-        InventoryDto inventory = inventoryService.updateInventory(id, request, request2);
+    public ApiResponse<InventoryDto> updateInventory(
+            @PathVariable Long id,
+            @RequestBody UpdateInventoryRequest request,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        InventoryDto inventory = inventoryService.updateInventory(id, request, tenantId);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventory)
@@ -48,8 +52,10 @@ public class InventoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteInventory(@PathVariable Long id, HttpServletRequest request2) {
-        inventoryService.deleteInventory(id, request2);
+    public ApiResponse<Void> deleteInventory(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        inventoryService.deleteInventory(id, tenantId);
         return ApiResponse.<Void>builder()
                 .code(HttpStatus.OK.value())
                 .message("Inventory deleted successfully")
@@ -57,8 +63,10 @@ public class InventoryController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<InventoryDto> getInventoryById(@PathVariable Long id, HttpServletRequest request2) {
-        InventoryDto inventory = inventoryService.getInventoryById(id, request2);
+    public ApiResponse<InventoryDto> getInventoryById(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        InventoryDto inventory = inventoryService.getInventoryById(id, tenantId);
         return ApiResponse.<InventoryDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventory)
@@ -77,8 +85,10 @@ public class InventoryController {
     }
 
     @GetMapping("/branches/{branchId}")
-    public ApiResponse<List<InventoryDto>> getAllInventoryByBranchId(@PathVariable Long branchId, HttpServletRequest request2) {
-        List<InventoryDto> inventories = inventoryService.getAllInventoryByBranchId(branchId, request2);
+    public ApiResponse<List<InventoryDto>> getAllInventoryByBranchId(
+            @PathVariable Long branchId,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        List<InventoryDto> inventories = inventoryService.getAllInventoryByBranchId(branchId, tenantId);
         return ApiResponse.<List<InventoryDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventories)

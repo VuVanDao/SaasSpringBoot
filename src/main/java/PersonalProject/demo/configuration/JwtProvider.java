@@ -1,13 +1,17 @@
 package PersonalProject.demo.configuration;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import PersonalProject.demo.models.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -21,17 +25,13 @@ public class JwtProvider {
     static SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRET.getBytes());
 
     // 1. Sinh Access Token
-    public String generateToken(Authentication authentication) {
+    public String generateToken(User user) {
         System.out.println("-----------------JwtProvider.generateToken-----------------");
         // GrantedAuthority là một interface đại diện cho quyền (authority/permission) mà một user có trong hệ thống.
         // Collection<? extends GrantedAuthority> Là một Tập hợp (Container) chứa nhiều đối tượng thực thi Interface đó.
-        /*
-          Ký hiệu ? extends trong Java Generics cho phép danh sách này linh hoạt hơn. 
-          Nó có thể chứa bất kỳ lớp nào triển khai (implement) lại Interface GrantedAuthority. 
-          Ví dụ: SimpleGrantedAuthority là một lớp phổ biến mà Spring Security dùng để hiện thực hóa Interface này.
-        */
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String roles = populateAuthorities(authorities);
+        // Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        String roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
         return Jwts.builder()
                 // issuedAt (IAT): Đây là thời điểm phát hành token (thời điểm hệ thống tạo ra nó). Nó ghi lại chính xác lúc nào người dùng đăng nhập thành công.
                 .issuedAt(new Date())
@@ -39,17 +39,13 @@ public class JwtProvider {
                 // Điều này có nghĩa là token sẽ chỉ hợp lệ trong vòng 5p kể từ khi nó được tạo ra.
                 .expiration(new Date(new Date().getTime() + JwtConstant.ACCESS_TOKEN_EXPIRATION))
                 // Nhét email vào một cái túi (Claim).
-                .claim("email", authentication.getName())
+                .claim("email", user.getEmail())
                 // Lưu danh sách quyền của user vào token.
                 .claim("authorities", roles)
+                .claim("id", user.getId())
+                .claim("tenant-id", user.getTenantId())
                 // Hệ thống sẽ dùng một thuật toán mã hóa (như HMAC) kết hợp với cái key (bí mật) của bạn để băm (hash) toàn bộ nội dung phía trên.
                 .signWith(key)
-                /* 
-                Về mặt kỹ thuật: Hàm này sẽ thực hiện việc mã hóa các phần (Header, Payload) sang định dạng Base64Url, sau đó nối chúng lại với nhau bằng các dấu chấm (.)
-                Kết quả: Nó chuyển đổi đối tượng Builder (đang nằm trong bộ nhớ máy tính) thành một String duy nhất có dạng: xxxxx.yyyyy.zzzzz.
-                Ví dụ: Nếu không có compact(), bạn chỉ có một "bản thảo" thiết kế. 
-                Gọi compact() giống như việc bạn bấm nút "In ấn" để ra được tờ hóa đơn cuối cùng gửi cho khách hàng.
-                 */
                 .compact();
     }
 
@@ -61,23 +57,25 @@ public class JwtProvider {
     public String GetEmailFromToken(String jwt) {
         System.out.println("-----------------JwtProvider.GetEmailFromToken-----------------");
         SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRET.getBytes());
-                // Verify JWT
-                // Dùng secret key để check hợp lệ, Nếu hai bên dùng secret khác nhau, token sẽ bị coi là giả.
+        // Verify JWT
+        // Dùng secret key để check hợp lệ, Nếu hai bên dùng secret khác nhau, token sẽ bị coi là giả.
         Claims claims = Jwts
                 // Khởi tạo một bộ phân tích (parser) để đọc chuỗi JWT
-                    .parser()
+                .parser()
                 // Bạn đưa chìa khóa (SecretKey hoặc PublicKey) vào. Parser sẽ dùng khóa này để tính toán lại chữ ký và so sánh với chữ ký có trong Token.
-                    .verifyWith(key)
+                .verifyWith(key)
                 // Chốt cấu hình cho Parser.
-                    .build()
+                .build()
                 // Nó thực hiện việc kiểm tra chữ ký ngay tại đây. Nếu chữ ký sai hoặc token hết hạn, nó sẽ "bắn" lỗi ngay lập tức.
                 // Nếu đúng, nó sẽ trả về một đối tượng chứa toàn bộ cấu trúc của JWT (Header, Payload, Signature).
-                    .parseSignedClaims(jwt)
+                .parseSignedClaims(jwt)
                 // Bạn đang yêu cầu thư viện lấy phần nội dung (Payload) của Token ra.
-                    .getPayload();
-                // Claims thực chất là một dạng Map<String, Object> chứa các thông tin như sub (subject), iat (issued at), exp (expiration), v.v.
+                .getPayload();
+        // Claims thực chất là một dạng Map<String, Object> chứa các thông tin như sub (subject), iat (issued at), exp (expiration), v.v.
         return String.valueOf(claims.get("email"));
     }
+    
+    // lấy danh sách các role
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
         System.out.println("-----------------JwtProvider.generateToken-----------------");
         Set<String> auths = new HashSet<>();

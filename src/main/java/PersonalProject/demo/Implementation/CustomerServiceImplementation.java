@@ -15,8 +15,6 @@ import PersonalProject.demo.models.Customer;
 import PersonalProject.demo.repositories.CustomerRepository;
 import PersonalProject.demo.services.CustomerService;
 import PersonalProject.demo.utils.TenantUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,33 +25,32 @@ public class CustomerServiceImplementation implements CustomerService {
     private final CustomerMapper customerMapper;
 
     @Override
-    public CustomerDto createCustomer(CreateCustomerRequest createRequest, HttpServletRequest request) {
-        Long tenant_id = tenantUtil.validateTenant(request);
-        Customer customer = customerMapper.toCustomer(createRequest, tenant_id);
+    public CustomerDto createCustomer(CreateCustomerRequest createRequest, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        Customer customer = customerMapper.toCustomer(createRequest, tenantId);
         customerRepository.save(customer);
         return customerMapper.toCustomerDto(customer);
     }
 
     @Override
-    public CustomerDto getCustomerById(Long id, HttpServletRequest request) {
-        Long tenant_id = tenantUtil.validateTenant(request);
-        Customer customer = customerRepository.findByIdAndTenantId(id, tenant_id)
+    public CustomerDto getCustomerById(Long id, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        Customer customer = customerRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
         return customerMapper.toCustomerDto(customer);
     }
 
-    // @Transactional
     @Override
-    public List<CustomerDto> getAllCustomersByTenantId(HttpServletRequest request) {
-        Long tenant_id = tenantUtil.validateTenant(request);
-        List<Customer> customers = customerRepository.findAllByTenantId(tenant_id);
+    public List<CustomerDto> getAllCustomersByTenantId(Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        List<Customer> customers = customerRepository.findAllByTenantId(tenantId);
         return customers.stream().map(customerMapper::toCustomerDto).collect(Collectors.toList());
     }
 
     @Override
-    public CustomerDto updateCustomer(Long id, UpdateCustomerRequest updateRequest, HttpServletRequest request) {
-        Long tenant_id = tenantUtil.validateTenant(request);
-        Customer customer = customerRepository.findByIdAndTenantId(id, tenant_id)
+    public CustomerDto updateCustomer(Long id, UpdateCustomerRequest updateRequest, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        Customer customer = customerRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
         customerMapper.toCustomerFromUpdateRequest(customer, updateRequest);
         customerRepository.save(customer);
@@ -61,11 +58,10 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public void deleteCustomer(Long id, HttpServletRequest request) {
-        Long tenant_id = tenantUtil.validateTenant(request);
-        Customer customer = customerRepository.findByIdAndTenantId(id, tenant_id)
+    public void deleteCustomer(Long id, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        Customer customer = customerRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
         customerRepository.delete(customer);
     }
-
 }

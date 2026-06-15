@@ -21,7 +21,6 @@ public class UserDto {
     String fullName;
     String email;
     String phone;
-    String password;
     UserRole role;
     LocalDateTime lastLogin;
     StoreDto store;

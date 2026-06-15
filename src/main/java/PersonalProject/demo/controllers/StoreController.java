@@ -8,9 +8,7 @@ import PersonalProject.demo.Dto.Request.UpdateStoreRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.StoreDto;
 import PersonalProject.demo.Enums.StoreStatus;
-import PersonalProject.demo.configuration.JwtConstant;
 import PersonalProject.demo.services.StoreService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -30,11 +28,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
-    private final String HeaderKey = JwtConstant.JWT_HEADER;
 
     @PostMapping
-    public ApiResponse<StoreDto> createStore(@RequestBody CreateStoreRequest request,HttpServletRequest request2) {
-        StoreDto storeDto = storeService.createStore(request, request2);
+    public ApiResponse<StoreDto> createStore(
+            @RequestBody CreateStoreRequest request,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto storeDto = storeService.createStore(request, tenantId);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(storeDto)
@@ -51,8 +50,9 @@ public class StoreController {
     }
 
     @GetMapping("/admin")
-    public ApiResponse<List<StoreDto>> getAllStores(HttpServletRequest request) {
-        List<StoreDto> stores = storeService.getAllStores(request);
+    public ApiResponse<List<StoreDto>> getAllStores(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        List<StoreDto> stores = storeService.getAllStores(tenantId);
         return ApiResponse.<List<StoreDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(stores)
@@ -60,8 +60,11 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<StoreDto> updateStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeDto,  HttpServletRequest request) {
-        StoreDto updatedStore = storeService.updateStore(id, storeDto, request);
+    public ApiResponse<StoreDto> updateStore(
+            @PathVariable Long id,
+            @RequestBody UpdateStoreRequest storeDto,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto updatedStore = storeService.updateStore(id, storeDto, tenantId);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(updatedStore)
@@ -69,8 +72,10 @@ public class StoreController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteStore(@PathVariable Long id, HttpServletRequest request) {
-        storeService.deleteStore(id, request);
+    public ApiResponse<String> deleteStore(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        storeService.deleteStore(id, tenantId);
         return ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .result("Store deleted successfully")
@@ -78,9 +83,9 @@ public class StoreController {
     }
 
     @GetMapping("/employee")
-    public ApiResponse<StoreDto> getStoreByEmployee(@RequestHeader(HeaderKey) String jwt, HttpServletRequest request) {
-        // Assuming the service uses the current user from JWT
-        StoreDto storeDto = storeService.getStoreByEmployee(request);
+    public ApiResponse<StoreDto> getStoreByEmployee(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto storeDto = storeService.getStoreByEmployee(tenantId);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)
@@ -88,9 +93,11 @@ public class StoreController {
     }
 
     @PatchMapping("/update_status/{id}")
-    public ApiResponse<StoreDto> updateStatusStore(@PathVariable Long id, @RequestBody UpdateStoreRequest storeStatus,
-            HttpServletRequest request) {
-        StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus(), request);
+    public ApiResponse<StoreDto> updateStatusStore(
+            @PathVariable Long id,
+            @RequestBody UpdateStoreRequest storeStatus,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus(), tenantId);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .message("Update store status complete")
@@ -99,9 +106,9 @@ public class StoreController {
     }
     
     @GetMapping("/store-manager")
-    public ApiResponse<StoreDto> getStoreByStoreManager(@RequestHeader(HeaderKey) String jwt, HttpServletRequest request) {
-        // Assuming the service uses the current user from JWT
-        StoreDto storeDto = storeService.getStoreByStoreManager(request);
+    public ApiResponse<StoreDto> getStoreByStoreManager(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto storeDto = storeService.getStoreByStoreManager(tenantId);
         return ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)

@@ -8,7 +8,6 @@ import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.UserDto;
 import PersonalProject.demo.configuration.JwtConstant;
 import PersonalProject.demo.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -48,8 +47,9 @@ public class UserController {
                 .build();
     }
     @GetMapping
-    public ApiResponse<List<UserDto>> getUsers(HttpServletRequest request) {
-        List<UserDto> userDto = userService.getAllUsers(request);
+    public ApiResponse<List<UserDto>> getUsers(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        List<UserDto> userDto = userService.getAllUsers(tenantId);
         return ApiResponse.<List<UserDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(userDto)
@@ -58,19 +58,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ApiResponse<UserDto> updateUserProfile(@PathVariable Long id,
-            @Valid @RequestBody UpdateProfileRequest entity, HttpServletRequest request2) {
+            @Valid @RequestBody UpdateProfileRequest entity, 
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<UserDto>builder()
                 .code(HttpStatus.OK.value())
-                .result(userService.updateUserProfile(id, entity, request2))
+                .result(userService.updateUserProfile(id, entity, tenantId))
                 .build();
     }
     
     @GetMapping("/store")
-    public ApiResponse<List<UserDto>> getAllUsersByTenantId(HttpServletRequest request) {
+    public ApiResponse<List<UserDto>> getAllUsersByTenantId(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         // day thuc ra la api endpoint de store manager lay tat ca user trong tenant cua no
         return ApiResponse.<List<UserDto>>builder()
                 .code(HttpStatus.OK.value())
-                .result(userService.getAllUsersByTenantId(request))
+                .result(userService.getAllUsersByTenantId(tenantId))
                 .build();
     }
 }

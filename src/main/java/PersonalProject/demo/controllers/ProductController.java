@@ -8,12 +8,12 @@ import PersonalProject.demo.Dto.Request.UpdateProductRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.ProductDto;
 import PersonalProject.demo.services.ProductService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -28,65 +28,76 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    // post: /products : create new product
+
     @PostMapping
-    public ApiResponse<ProductDto> createProduct(@RequestBody CreateProductRequest request, HttpServletRequest request2) {
+    public ApiResponse<ProductDto> createProduct(
+            @RequestBody CreateProductRequest request,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<ProductDto>builder()
                 .message("Product created successfully")
-                .result(productService.createProduct(request,request2))
+                .result(productService.createProduct(request, tenantId))
                 .build();
     }
     
-    // get: /products : get all products
     @GetMapping
-    public ApiResponse<List<ProductDto>> getAllProduct(HttpServletRequest request2) {
+    public ApiResponse<List<ProductDto>> getAllProduct(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<List<ProductDto>>builder()
                 .message("Products retrieved successfully")
-                .result(productService.getAllProducts(request2))
+                .result(productService.getAllProducts(tenantId))
                 .build();
     }
     
-    // get: /products/{id} : get product by id
     @GetMapping("/{id}")
-    public ApiResponse<ProductDto> getProductById(@PathVariable Long id, HttpServletRequest request2) {
+    public ApiResponse<ProductDto> getProductById(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<ProductDto>builder()
                 .message("Product retrieved successfully")
-                .result(productService.getProductById(id,request2))
+                .result(productService.getProductById(id, tenantId))
                 .build();
     }
-    // put: /products/{id} : update product by id
+
     @PutMapping("/{id}")
-    public ApiResponse<ProductDto> updateProduct(@PathVariable Long id,@Valid @RequestBody UpdateProductRequest request, HttpServletRequest request2) {
+    public ApiResponse<ProductDto> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateProductRequest request,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<ProductDto>builder()
                 .message("Product updated successfully")
-                .result(productService.updateProduct(id, request, request2))
+                .result(productService.updateProduct(id, request, tenantId))
                 .build();
     }
-    // delete: /products/{id} : delete product by id
+
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteProduct(@PathVariable Long id, HttpServletRequest request2) {
-        productService.deleteProduct(id, request2);
+    public ApiResponse<Void> deleteProduct(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        productService.deleteProduct(id, tenantId);
         return ApiResponse.<Void>builder()
                 .message("Product deleted successfully")
                 .build();
     }
-    // get: /products/store/{storeId} : search all products by store id
+
     @GetMapping("/store/{storeId}")
-    public ApiResponse<List<ProductDto>> getAllProductsByStoreId(@PathVariable Long storeId, HttpServletRequest request2) {
+    public ApiResponse<List<ProductDto>> getAllProductsByStoreId(
+            @PathVariable Long storeId,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         return ApiResponse.<List<ProductDto>>builder()
                 .message("Get all product by storeID complete")
-                .result(productService.getAllProductsByStoreId(storeId,request2))
+                .result(productService.getAllProductsByStoreId(storeId, tenantId))
                 .build();
     }
     
-    // get: /products/store/{storeId}/search?{query} : search all products by name, brand, category
     @GetMapping("/store/{storeId}/search")
-    public ApiResponse<List<ProductDto>> getProductsByQuery(@PathVariable Long storeId,
-            @RequestParam(required = false) String query,HttpServletRequest request2) {
+    public ApiResponse<List<ProductDto>> getProductsByQuery(
+            @PathVariable Long storeId,
+            @RequestParam(required = false) String query,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
         if(query == null || query.isEmpty()) {
             return ApiResponse.<List<ProductDto>>builder()
                     .message("Products retrieved successfully")
-                    .result(productService.getAllProductsByStoreId(storeId,request2))
+                    .result(productService.getAllProductsByStoreId(storeId, tenantId))
                     .build();
         }
         return ApiResponse.<List<ProductDto>>builder()

@@ -7,22 +7,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import PersonalProject.demo.Dto.Request.CreateBranchRequest;
 import PersonalProject.demo.Dto.Request.UpdateBranchRequest;
 import PersonalProject.demo.Dto.Response.BranchDto;
-import PersonalProject.demo.Dto.Response.StoreDto;
-import jakarta.servlet.http.HttpServletRequest;
 
 public interface BranchService {
 
     @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER')")
-    BranchDto createBranch(CreateBranchRequest request,HttpServletRequest request2);
+    BranchDto createBranch(CreateBranchRequest request, Long tenantId);
 
-    BranchDto getBranchById(Long id, HttpServletRequest request2);
+    BranchDto getBranchById(Long id, Long tenantId);
 
-    List<BranchDto> getAllBranches(HttpServletRequest request);
+    List<BranchDto> getAllBranches(Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER')")
-    BranchDto updateBranch(Long id, UpdateBranchRequest request, HttpServletRequest request2);
+    BranchDto updateBranch(Long id, UpdateBranchRequest request, Long tenantId);
 
-    void deleteBranch(Long id, HttpServletRequest request2);
-
-    // List<StoreDto> getAllStoresByBranchId(Long branchId);
+    void deleteBranch(Long id, Long tenantId);
 }
