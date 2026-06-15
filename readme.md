@@ -1,3 +1,49 @@
+# VuVanDao / SaasSpringBoot
+
+## 1. Giới Thiệu Dự Án
+Chào mừng bạn đến với **SaasSpringBoot** - Hệ thống Quản lý Cửa hàng & Kho hàng Đa chi nhánh (SaaS Multi-Tenant Store & Inventory Management System) được phát triển trên nền tảng **Spring Boot**.
+
+### Các đặc điểm nổi bật của dự án:
+- **Hỗ trợ Multi-Tenancy:** Mỗi đối tác doanh nghiệp (Tenant) sở hữu và quản lý một vùng dữ liệu riêng biệt từ cửa hàng, chi nhánh đến kho sản phẩm.
+- **Phân quyền người dùng:** Cơ chế bảo mật và phân quyền chi tiết dựa trên JWT (ADMIN, STORE_MANAGER, EMPLOYEE).
+- **Quản lý tồn kho linh hoạt:** Cho phép theo dõi tồn kho theo từng chi nhánh, nhập kho hàng loạt và tìm kiếm thông minh.
+
+---
+
+## 2. Hướng Dẫn Nhanh Cho Developer Mới (API Overview)
+
+Để bắt đầu làm việc với hệ thống API, bạn cần nắm rõ luồng vận hành cơ bản sau:
+
+### Luồng Xác Thực (Authentication Flow)
+1. **Đăng ký / Đăng nhập:** Gửi request đến `/auth/sign_up` hoặc `/auth/login` để lấy mã **JWT (Access Token)**.
+2. **Gửi Request:** Đính kèm mã JWT vào header của mọi request tiếp theo dưới dạng:
+   ```http
+   Authorization: Bearer {token}
+   ```
+
+### Các Nhóm API Chính
+- **Xác thực (`/auth`):** Đăng ký, đăng nhập và cấp lại token.
+- **Doanh nghiệp (`/tenants`):** Tạo và quản lý thông tin các Tenant trong hệ thống.
+- **Sản phẩm & Danh mục (`/products`, `/categories`):** Quản lý danh sách sản phẩm và phân loại sản phẩm.
+- **Chi nhánh & Kho (`/branches`, `/inventory`, `/inventory_item`):** Thiết lập chi nhánh, tạo kho hàng và cập nhật số lượng hàng tồn kho.
+
+### Định Dạng Response Chuẩn
+Tất cả các API đều trả về một cấu trúc đồng nhất (`ApiResponse`):
+```json
+{
+  "code": 200, // HTTP Status Code
+  "message": "ok", // Thông báo phản hồi
+  "result": { ... } // Dữ liệu thực tế trả về
+}
+```
+
+### Tài Liệu Chi Tiết (Full API Documentation)
+Nếu bạn muốn tra cứu chi tiết từng endpoint (Input request body, Output response, Query parameters...), vui lòng xem tại các file tài liệu dưới đây:
+- 🇺🇸 [Tài Liệu API Tiếng Anh (English Version)](API_ENDPOINTS_DOCUMENTATION_EN.md)
+- 🇻🇳 [Tài Liệu API Tiếng Việt (Vietnamese Version)](API_ENDPOINTS_DOCUMENTATION_VN.md)
+
+---
+
 # File Tree: demo
 
 **Generated:** 4/24/2026, 5:31:36 PM
@@ -166,5 +212,3 @@
 ├── ⚙️ pom.xml
 └── 📝 readme.md
 ```
-
----
