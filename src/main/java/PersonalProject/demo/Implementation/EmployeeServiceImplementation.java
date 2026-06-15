@@ -122,8 +122,9 @@ public class EmployeeServiceImplementation implements EmployeeService {
                     .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.Resource_not_found));
             employee.setUser(user);
         }
-        employee.setEmail(updateEmployeeRequest.getEmail());
-        employee.setPhone(updateEmployeeRequest.getPhone());
+        user.setEmail(updateEmployeeRequest.getEmail());
+        user.setPhone(updateEmployeeRequest.getPhone());
+        userRepository.save(user);
         employee.setEmployeeCode(updateEmployeeRequest.getEmployeeCode());
         employee.setSalary(updateEmployeeRequest.getSalary());
         employeeRepository.save(employee);

@@ -24,7 +24,7 @@ public interface UserService {
     
     UserDto updateUserProfile(Long userId, UpdateProfileRequest request, Long tenantId);
 
-    @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_STORE_MANAGER','ROLE_SUPER_ADMIN')")
     List<UserDto> getAllUsersByTenantId(Long tenantId);
 }
 

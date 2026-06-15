@@ -29,43 +29,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserController {
     private final UserService userService;
     private final String HeaderKey = JwtConstant.JWT_HEADER;
+
+    // DES: lấy profile, thông tin của user đang login
     @GetMapping("/profile")
     public ApiResponse<UserDto> Profile(@RequestHeader(HeaderKey) String jwt) {
-        UserDto userDto = userService.getUserFromJwtToken(jwt);
-        return ApiResponse.<UserDto>builder()
-                .code(HttpStatus.OK.value())
-                .result(userDto)
-                .build();
+            UserDto userDto = userService.getUserFromJwtToken(jwt);
+            return ApiResponse.<UserDto>builder()
+                            .code(HttpStatus.OK.value())
+                            .result(userDto)
+                            .build();
     }
 
+    // (EM) DES: lấy user bằng id
     @GetMapping("/{id}")
-        public ApiResponse<UserDto> getUserById(@PathVariable Long id) {
-        UserDto userDto = userService.getUserById(id);
-        return ApiResponse.<UserDto>builder()
-                .code(HttpStatus.OK.value())
-                .result(userDto)
-                .build();
+    public ApiResponse<UserDto> getUserById(@PathVariable Long id) {
+            UserDto userDto = userService.getUserById(id);
+            return ApiResponse.<UserDto>builder()
+                            .code(HttpStatus.OK.value())
+                            .result(userDto)
+                            .build();
     }
+    
+    // (EM) DES: lấy danh sách user
     @GetMapping
     public ApiResponse<List<UserDto>> getUsers(
-            @RequestHeader("${app.header-tenant}") Long tenantId) {
-        List<UserDto> userDto = userService.getAllUsers(tenantId);
-        return ApiResponse.<List<UserDto>>builder()
-                .code(HttpStatus.OK.value())
-                .result(userDto)
-                .build();
+                    @RequestHeader("${app.header-tenant}") Long tenantId) {
+            List<UserDto> userDto = userService.getAllUsers(tenantId);
+            return ApiResponse.<List<UserDto>>builder()
+                            .code(HttpStatus.OK.value())
+                            .result(userDto)
+                            .build();
     }
 
+    // DES: update profile của user
     @PutMapping("/{id}")
     public ApiResponse<UserDto> updateUserProfile(@PathVariable Long id,
             @Valid @RequestBody UpdateProfileRequest entity, 
-            @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<UserDto>builder()
-                .code(HttpStatus.OK.value())
-                .result(userService.updateUserProfile(id, entity, tenantId))
-                .build();
+                    @RequestHeader("${app.header-tenant}") Long tenantId) {
+            return ApiResponse.<UserDto>builder()
+                            .code(HttpStatus.OK.value())
+                            .result(userService.updateUserProfile(id, entity, tenantId))
+                            .build();
     }
     
+    // (D) DES: lấy danh sách user của 1 tenant - hơi vô nghĩa, để đấy, tạm thời chưa có công dụng
     @GetMapping("/store")
     public ApiResponse<List<UserDto>> getAllUsersByTenantId(
             @RequestHeader("${app.header-tenant}") Long tenantId) {

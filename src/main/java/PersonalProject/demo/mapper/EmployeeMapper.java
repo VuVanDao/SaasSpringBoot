@@ -18,19 +18,20 @@ public class EmployeeMapper {
         if (employee == null) {
             return null;
         }
+        User user = employee.getUser();
         return EmployeeDto.builder()
                 .id(employee.getId())
-                .email(employee.getEmail())
-                .phone(employee.getPhone())
+                .email(user != null ? user.getEmail() : null)
+                .phone(user != null ? user.getPhone() : null)
                 .employeeCode(employee.getEmployeeCode())
                 .salary(employee.getSalary())
                 .employeeRole(employee.getEmployeeRole())
                 .storeId(employee.getStore().getId())
                 .branchId(employee.getBranch() != null ? employee.getBranch().getId() : null)
                 .branchName(employee.getBranch() != null ? employee.getBranch().getName() : null)
-                .userId(employee.getUser().getId())
+                .userId(user != null ? user.getId() : null)
                 .storeBrand(employee.getStore().getBrand())
-                .fullName(employee.getUser().getFullName())
+                .fullName(user != null ? user.getFullName() : null)
                 .build();
     }
 
@@ -40,8 +41,6 @@ public class EmployeeMapper {
         }
         return Employee.builder()
                 .id(employeeDto.getId())
-                .email(employeeDto.getEmail())
-                .phone(employeeDto.getPhone())
                 .employeeCode(employeeDto.getEmployeeCode())
                 .salary(employeeDto.getSalary())
                 .employeeRole(employeeDto.getEmployeeRole())
@@ -55,8 +54,6 @@ public class EmployeeMapper {
             return null;
         }
         return Employee.builder()
-                .email(createEmployeeRequest.getEmail())
-                .phone(createEmployeeRequest.getPhone())
                 .employeeCode(createEmployeeRequest.getEmployeeCode())
                 .salary(createEmployeeRequest.getSalary())
                 .employeeRole(createEmployeeRequest.getEmployeeRole())
@@ -67,14 +64,12 @@ public class EmployeeMapper {
                 .build();
     }
     
-        public Employee toUpdateModel(UpdateEmployeeRequest updateEmployeeRequest, Store store, Branch branch, User user,
+    public Employee toUpdateModel(UpdateEmployeeRequest updateEmployeeRequest, Store store, Branch branch, User user,
             Long tenantId) {
         if (updateEmployeeRequest == null) {
             return null;
         }
         return Employee.builder()
-                .email(updateEmployeeRequest.getEmail())
-                .phone(updateEmployeeRequest.getPhone())
                 .employeeCode(updateEmployeeRequest.getEmployeeCode())
                 .salary(updateEmployeeRequest.getSalary())
                 .employeeRole(updateEmployeeRequest.getEmployeeRole())
