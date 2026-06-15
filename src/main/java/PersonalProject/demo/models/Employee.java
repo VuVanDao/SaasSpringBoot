@@ -12,11 +12,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -24,11 +21,12 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
-// @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee extends AbstractTenantModel {
+    
     @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
     User user; // User account của nhân viên
 
     @ManyToOne
@@ -42,9 +40,8 @@ public class Employee extends AbstractTenantModel {
     @Enumerated(EnumType.STRING)
     EmployeeRole employeeRole;
 
-    String email;// email cong viec
-    String phone;// sdt cong viec
     @Column(unique = true)
     String employeeCode; // Unique code for each employee
+    
     BigDecimal salary;
 }

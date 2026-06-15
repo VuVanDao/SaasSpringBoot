@@ -105,8 +105,11 @@ public class AuthServiceImplementation implements AuthRepositories {
     private Authentication authenticate(String email, String password) {
         UserDetails user = customUserImplementation.loadUserByUsername(email);
         // User user = userRepository.findByEmail(email);
-        if(user == null) {
+        if (user == null) {
             throw new RuntimeException("User not found");
+        }
+        if (user.getPassword() == null) {
+            throw new RuntimeException("Password not set for this account");
         }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");

@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import PersonalProject.demo.Enums.UserRole;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,8 +44,10 @@ public class User extends AbstractTenantModel implements UserDetails{
 
     String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     String password;
+
+    String avatar;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,8 +62,11 @@ public class User extends AbstractTenantModel implements UserDetails{
     @OneToOne(mappedBy = "manager")
     Branch branch;
     
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     Employee employee;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    Customer customer;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
