@@ -32,8 +32,7 @@ public class CreateProductRequest {
     @NotNull(message = "Selling price is required")
     private BigDecimal sellingPrice;
 
-    // @NotNull(message = "Store ID is required")
-    // private Long storeId;
+    private Long storeId;
 
     @NotNull(message = "Tenant_id price is required")
     Long tenant_id;
