@@ -11,7 +11,7 @@ import lombok.Getter;
 public enum ErrorCode {
     Resource_not_found(400, "Not found", HttpStatus.BAD_REQUEST),
     AuthorizationDeniedException(403, "you haven't permission to access this", HttpStatus.FORBIDDEN),
-    BadCredentialsException(401, "Error, there is a user authentication issue", HttpStatus.FORBIDDEN),
+    BadCredentialsException(401, "Error, there is a user authentication issue", HttpStatus.UNAUTHORIZED),
     Resource_already_exist(400, "Duplicate value", HttpStatus.BAD_REQUEST),
     USER_NOT_VALID_FOR_MANAGER(400,
             "User không có quyền quản lý chi nhánh. Vui lòng cập nhật role thành BRANCH_MANAGER trước khi gán.",

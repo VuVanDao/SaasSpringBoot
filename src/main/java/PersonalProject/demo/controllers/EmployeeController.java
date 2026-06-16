@@ -1,5 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import PersonalProject.demo.Dto.Request.CreateEmployeeRequest;
@@ -23,85 +25,99 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/employees")
+@RequestMapping
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @PostMapping
-    public ApiResponse<EmployeeDto> createEmployee(
+    // DES: Tạo nhân viên mới
+    @PostMapping("/employees")
+    public ResponseEntity<ApiResponse<EmployeeDto>> createEmployee(
             @Valid @RequestBody CreateEmployeeRequest createRequest,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<EmployeeDto>builder()
+        ApiResponse<EmployeeDto> response = ApiResponse.<EmployeeDto>builder()
                 .message("Create Employee complete")
                 .result(employeeService.createEmployee(createRequest, tenantId))
-                .code(200)
+                .code(HttpStatus.CREATED.value())
                 .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    @GetMapping("/store/{store_id}")
-    public ApiResponse<List<EmployeeDto>> getEmployeesByStoreId(
-            @PathVariable Long store_id,
+    // DES: Lấy danh sách nhân viên của một cửa hàng
+    @GetMapping("/stores/{storeId}/employees")
+    public ResponseEntity<ApiResponse<List<EmployeeDto>>> getEmployeesByStoreId(
+            @PathVariable Long storeId,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<EmployeeDto>>builder()
+        ApiResponse<List<EmployeeDto>> response = ApiResponse.<List<EmployeeDto>>builder()
                 .message("Get Employees by Store ID complete")
-                .result(employeeService.getAllEmployeesOfAStore(store_id, tenantId))
-                .code(200)
+                .result(employeeService.getAllEmployeesOfAStore(storeId, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{employee_id}")
-    public ApiResponse<EmployeeDto> getEmployeeById(
-            @PathVariable Long employee_id,
+    // DES: Lấy thông tin nhân viên bằng ID
+    @GetMapping("/employees/{id}")
+    public ResponseEntity<ApiResponse<EmployeeDto>> getEmployeeById(
+            @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<EmployeeDto>builder()
+        ApiResponse<EmployeeDto> response = ApiResponse.<EmployeeDto>builder()
                 .message("Get Employee by ID complete")
-                .result(employeeService.getEmployeeById(employee_id, tenantId))
-                .code(200)
+                .result(employeeService.getEmployeeById(id, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{user_id}")
-    public ApiResponse<EmployeeDto> getEmployeeByUserId(
-            @PathVariable Long user_id,
+    // DES: Lấy thông tin nhân viên bằng User ID
+    @GetMapping("/users/{userId}/employees")
+    public ResponseEntity<ApiResponse<EmployeeDto>> getEmployeeByUserId(
+            @PathVariable Long userId,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<EmployeeDto>builder()
+        ApiResponse<EmployeeDto> response = ApiResponse.<EmployeeDto>builder()
                 .message("Get Employee by User ID complete")
-                .result(employeeService.getEmployeeByUserId(user_id, tenantId))
-                .code(200)
+                .result(employeeService.getEmployeeByUserId(userId, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/branch/{branch_id}")
-    public ApiResponse<List<EmployeeDto>> getEmployeeByBranchId(
-            @PathVariable Long branch_id,
+    // DES: Lấy danh sách nhân viên của một chi nhánh
+    @GetMapping("/branches/{branchId}/employees")
+    public ResponseEntity<ApiResponse<List<EmployeeDto>>> getEmployeeByBranchId(
+            @PathVariable Long branchId,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<EmployeeDto>>builder()
+        ApiResponse<List<EmployeeDto>> response = ApiResponse.<List<EmployeeDto>>builder()
                 .message("Get Employee by Branch ID complete")
-                .result(employeeService.getEmployeeByBranchId(branch_id, tenantId))
-                .code(200)
+                .result(employeeService.getEmployeeByBranchId(branchId, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<EmployeeDto> updateEmployee(
+    // DES: Cập nhật thông tin nhân viên
+    @PutMapping("/employees/{id}")
+    public ResponseEntity<ApiResponse<EmployeeDto>> updateEmployee(
             @PathVariable Long id,
             @Valid @RequestBody UpdateEmployeeRequest updateRequest,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<EmployeeDto>builder()
+        ApiResponse<EmployeeDto> response = ApiResponse.<EmployeeDto>builder()
                 .message("Update Employee complete")
                 .result(employeeService.UpdateEmployee(id, updateRequest, tenantId))
-                .code(200)
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteEmployee(
+    // DES: Xóa nhân viên
+    @DeleteMapping("/employees/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteEmployee(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         employeeService.deleteEmployee(id, tenantId);
-        return ApiResponse.<Void>builder()
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .message("Delete Employee complete")
-                .code(200)
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 }

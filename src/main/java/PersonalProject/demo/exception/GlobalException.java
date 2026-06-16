@@ -40,16 +40,16 @@ public class GlobalException {
     public ResponseEntity<ApiResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setMessage(ex.getMessage());
-        apiResponse.setCode(409);
+        apiResponse.setCode(HttpStatus.CONFLICT.value());
         apiResponse.setResult(null);
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
     }
     // 3. lỗi chung chung
     @ExceptionHandler(value = RuntimeException.class)
     ResponseEntity<ApiResponse> handlingRunTimeException(RuntimeException runtimeException) {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setMessage(runtimeException.getMessage());
-        apiResponse.setCode(400);
+        apiResponse.setCode(HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(apiResponse);
     }
     // 4. error not found
@@ -57,7 +57,7 @@ public class GlobalException {
     ResponseEntity<ApiResponse> handlingResourceNotFoundException(ResourceNotFoundException ex) {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setMessage(ex.getMessage());
-        apiResponse.setCode(404);
+        apiResponse.setCode(HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
     }
     // 5. missing servlet request parameter
@@ -66,8 +66,8 @@ public class GlobalException {
             MissingServletRequestParameterException ex) {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setMessage(ex.getMessage());
-        apiResponse.setCode(404);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+        apiResponse.setCode(HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }
     
     @ExceptionHandler(value = BadCredentialsException.class)
@@ -76,7 +76,7 @@ public class GlobalException {
         ErrorCode errorCode = ErrorCode.BadCredentialsException;
         apiResponse.setMessage(errorCode.getMessage());
         apiResponse.setCode(errorCode.getCode());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
     }
 
     @ExceptionHandler(value = TenantException.class)

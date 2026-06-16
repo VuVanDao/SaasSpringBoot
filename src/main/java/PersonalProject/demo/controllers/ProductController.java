@@ -1,5 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,85 +26,93 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
-    @PostMapping
-    public ApiResponse<ProductDto> createProduct(
+    // DES: Tạo sản phẩm mới
+    @PostMapping("/products")
+    public ResponseEntity<ApiResponse<ProductDto>> createProduct(
             @RequestBody CreateProductRequest request,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<ProductDto>builder()
+        ApiResponse<ProductDto> response = ApiResponse.<ProductDto>builder()
+                .code(HttpStatus.CREATED.value())
                 .message("Product created successfully")
                 .result(productService.createProduct(request, tenantId))
                 .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    @GetMapping
-    public ApiResponse<List<ProductDto>> getAllProduct(
+    // DES: Lấy danh sách tất cả sản phẩm của tenant hiện tại
+    @GetMapping("/products")
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProduct(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<ProductDto>>builder()
+        ApiResponse<List<ProductDto>> response = ApiResponse.<List<ProductDto>>builder()
+                .code(HttpStatus.OK.value())
                 .message("Products retrieved successfully")
                 .result(productService.getAllProducts(tenantId))
                 .build();
+        return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/{id}")
-    public ApiResponse<ProductDto> getProductById(
+    // DES: Lấy thông tin chi tiết của một sản phẩm
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ApiResponse<ProductDto>> getProductById(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<ProductDto>builder()
+        ApiResponse<ProductDto> response = ApiResponse.<ProductDto>builder()
+                .code(HttpStatus.OK.value())
                 .message("Product retrieved successfully")
                 .result(productService.getProductById(id, tenantId))
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<ProductDto> updateProduct(
+    // DES: Cập nhật thông tin sản phẩm
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ApiResponse<ProductDto>> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody UpdateProductRequest request,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<ProductDto>builder()
+        ApiResponse<ProductDto> response = ApiResponse.<ProductDto>builder()
+                .code(HttpStatus.OK.value())
                 .message("Product updated successfully")
                 .result(productService.updateProduct(id, request, tenantId))
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteProduct(
+    // DES: Xóa sản phẩm
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         productService.deleteProduct(id, tenantId);
-        return ApiResponse.<Void>builder()
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
                 .message("Product deleted successfully")
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/store/{storeId}")
-    public ApiResponse<List<ProductDto>> getAllProductsByStoreId(
-            @PathVariable Long storeId,
-            @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<ProductDto>>builder()
-                .message("Get all product by storeID complete")
-                .result(productService.getAllProductsByStoreId(storeId, tenantId))
-                .build();
-    }
-    
-    @GetMapping("/store/{storeId}/search")
-    public ApiResponse<List<ProductDto>> getProductsByQuery(
+    // DES: Lấy tất cả sản phẩm hoặc tìm kiếm sản phẩm trong một store
+    @GetMapping("/stores/{storeId}/products")
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsByStoreId(
             @PathVariable Long storeId,
             @RequestParam(required = false) String query,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        if(query == null || query.isEmpty()) {
-            return ApiResponse.<List<ProductDto>>builder()
-                    .message("Products retrieved successfully")
-                    .result(productService.getAllProductsByStoreId(storeId, tenantId))
-                    .build();
+        List<ProductDto> products;
+        if (query == null || query.isEmpty()) {
+            products = productService.getAllProductsByStoreId(storeId, tenantId);
+        } else {
+            products = productService.searchProducts(storeId, query);
         }
-        return ApiResponse.<List<ProductDto>>builder()
+        ApiResponse<List<ProductDto>> response = ApiResponse.<List<ProductDto>>builder()
+                .code(HttpStatus.OK.value())
                 .message("Products retrieved successfully")
-                .result(productService.searchProducts(storeId, query))
+                .result(products)
                 .build();
+        return ResponseEntity.ok(response);
     }
 }
