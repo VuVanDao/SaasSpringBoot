@@ -1,5 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +20,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
-
 
 @RestController
 @RequestMapping("/tenants")
@@ -31,39 +29,49 @@ public class TenantController {
     private final TenantService tenantService;
 
     @PostMapping
-    public ApiResponse<TenantDto> createTenant(@Valid @RequestBody CreateTenantRequest request) {
+    public ResponseEntity<ApiResponse<TenantDto>> createTenant(@Valid @RequestBody CreateTenantRequest request) {
         TenantDto tenantDto = tenantService.createTenant(request);
-        return ApiResponse.<TenantDto>builder()
+        ApiResponse<TenantDto> response = ApiResponse.<TenantDto>builder()
+                .code(HttpStatus.CREATED.value())
                 .result(tenantDto)
                 .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     @GetMapping
-    public ApiResponse<List<TenantDto>> getAllTenant() {
-        return ApiResponse.<List<TenantDto>>builder()
+    public ResponseEntity<ApiResponse<List<TenantDto>>> getAllTenant() {
+        ApiResponse<List<TenantDto>> response = ApiResponse.<List<TenantDto>>builder()
+                .code(HttpStatus.OK.value())
                 .result(tenantService.getAllTenants())
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{tenantId}")
-    public ApiResponse<TenantDto> getTenantById(@PathVariable Long tenantId) {
-        return ApiResponse.<TenantDto>builder()
-                .result(tenantService.getTenantById(tenantId))
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<TenantDto>> getTenantById(@PathVariable Long id) {
+        ApiResponse<TenantDto> response = ApiResponse.<TenantDto>builder()
+                .code(HttpStatus.OK.value())
+                .result(tenantService.getTenantById(id))
                 .build();
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<TenantDto> updateTenant(@PathVariable Long id, @Valid @RequestBody CreateTenantRequest entity) {
-        return ApiResponse.<TenantDto>builder()
+    public ResponseEntity<ApiResponse<TenantDto>> updateTenant(@PathVariable Long id, @Valid @RequestBody CreateTenantRequest entity) {
+        ApiResponse<TenantDto> response = ApiResponse.<TenantDto>builder()
+                .code(HttpStatus.OK.value())
                 .result(tenantService.updateTenant(id, entity))
                 .build();
+        return ResponseEntity.ok(response);
     }
     
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteTenant(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteTenant(@PathVariable Long id) {
         tenantService.deleteTenant(id);
-        return ApiResponse.<String>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
                 .result("delete complete")
                 .build();
+        return ResponseEntity.ok(response);
     }
 }

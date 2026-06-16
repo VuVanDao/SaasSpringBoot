@@ -1,5 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,43 +27,51 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ApiResponse<CategoryResponse> createNewCategory(
+    public ResponseEntity<ApiResponse<CategoryResponse>> createNewCategory(
             @RequestBody CreateCategoryRequest request,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         CategoryResponse categoryResponse = categoryService.createCategory(request, tenantId);
-        return ApiResponse.<CategoryResponse>builder()
+        ApiResponse<CategoryResponse> response = ApiResponse.<CategoryResponse>builder()
+            .code(HttpStatus.CREATED.value())
             .result(categoryResponse)
             .message("Category created successfully")
             .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ApiResponse<List<CategoryResponse>> getAllCate(
+    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCate(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<CategoryResponse>>builder()
+        ApiResponse<List<CategoryResponse>> response = ApiResponse.<List<CategoryResponse>>builder()
+            .code(HttpStatus.OK.value())
             .result(categoryService.getAllCategories(tenantId))
             .message("Categories retrieved successfully")
             .build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<CategoryResponse> getCategoryById(
+    public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         CategoryResponse categoryResponse = categoryService.getCategoryById(id, tenantId);
-        return ApiResponse.<CategoryResponse>builder()
+        ApiResponse<CategoryResponse> response = ApiResponse.<CategoryResponse>builder()
+                .code(HttpStatus.OK.value())
                 .result(categoryResponse)
                 .message("Category retrieved successfully")
                 .build();
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteCategoryById(
+    public ResponseEntity<ApiResponse<Void>> deleteCategoryById(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         categoryService.deleteCategoryById(id, tenantId);
-        return ApiResponse.<Void>builder()
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .code(HttpStatus.OK.value())
                 .message("Category deleted successfully")
                 .build();
+        return ResponseEntity.ok(response);
     }
 }

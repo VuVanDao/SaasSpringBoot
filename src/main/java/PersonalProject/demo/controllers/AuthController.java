@@ -1,7 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,26 +17,42 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthServiceImplementation authServiceImplementation;
 
-    @PostMapping("/sign_up")
-    public ApiResponse<AuthResponse> postMethodName(@Valid @RequestBody CreateUserRequest request) {
+    @PostMapping("/sign-up")
+    public ResponseEntity<ApiResponse<AuthResponse>> signUp(@Valid @RequestBody CreateUserRequest request) {
         AuthResponse res = this.authServiceImplementation.signUp(request);
-        return ApiResponse.<AuthResponse>builder().code(200).result(res).build();
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .code(HttpStatus.CREATED.value())
+                .message("User registered successfully")
+                .result(res)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse res = this.authServiceImplementation.login(request);
-        return ApiResponse.<AuthResponse>builder().code(200).result(res).build();
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Login successful")
+                .result(res)
+                .build();
+        return ResponseEntity.ok(response);
     }
+
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        AuthResponse response = authServiceImplementation.refreshToken(request.getToken());
+    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        AuthResponse res = authServiceImplementation.refreshToken(request.getToken());
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Token refreshed successfully")
+                .result(res)
+                .build();
         return ResponseEntity.ok(response);
     }
 }

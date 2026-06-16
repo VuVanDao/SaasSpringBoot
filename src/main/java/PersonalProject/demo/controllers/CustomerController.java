@@ -1,5 +1,7 @@
 package PersonalProject.demo.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import PersonalProject.demo.Dto.Request.CreateCustomerRequest;
@@ -28,58 +30,63 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ApiResponse<CustomerDto> createCustomer(
+    public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(
             @Valid @RequestBody CreateCustomerRequest entity,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<CustomerDto>builder()
+        ApiResponse<CustomerDto> response = ApiResponse.<CustomerDto>builder()
                 .message("Customer created successfully")
                 .result(customerService.createCustomer(entity, tenantId))
-                .code(201)
+                .code(HttpStatus.CREATED.value())
                 .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
-    @GetMapping("/{customer_id}")
-    public ApiResponse<CustomerDto> getCustomer(
-            @PathVariable Long customer_id,
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<CustomerDto>> getCustomer(
+            @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<CustomerDto>builder()
+        ApiResponse<CustomerDto> response = ApiResponse.<CustomerDto>builder()
                 .message("Customer retrieved successfully")
-                .result(customerService.getCustomerById(customer_id, tenantId))
-                .code(200)
+                .result(customerService.getCustomerById(id, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
     
     @GetMapping
-    public ApiResponse<List<CustomerDto>> getAllCustomersByTenantId(
+    public ResponseEntity<ApiResponse<List<CustomerDto>>> getAllCustomersByTenantId(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<List<CustomerDto>>builder()
+        ApiResponse<List<CustomerDto>> response = ApiResponse.<List<CustomerDto>>builder()
                 .message("Customers retrieved successfully")
                 .result(customerService.getAllCustomersByTenantId(tenantId))
-                .code(200)
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
     
-    @PutMapping("/{customer_id}")
-    public ApiResponse<CustomerDto> updateCustomer(
-            @PathVariable Long customer_id,
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
+            @PathVariable Long id,
             @Valid @RequestBody UpdateCustomerRequest updateRequest,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        return ApiResponse.<CustomerDto>builder()
+        ApiResponse<CustomerDto> response = ApiResponse.<CustomerDto>builder()
                 .message("Customer updated successfully")
-                .result(customerService.updateCustomer(customer_id, updateRequest, tenantId))
-                .code(200)
+                .result(customerService.updateCustomer(id, updateRequest, tenantId))
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
     
-    @DeleteMapping("/{customer_id}")
-    public ApiResponse<Void> deleteCustomer(
-            @PathVariable Long customer_id,
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteCustomer(
+            @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
-        customerService.deleteCustomer(customer_id, tenantId);
-        return ApiResponse.<Void>builder()
+        customerService.deleteCustomer(id, tenantId);
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .message("Customer deleted successfully")
                 .result(null)
-                .code(200)
+                .code(HttpStatus.OK.value())
                 .build();
+        return ResponseEntity.ok(response);
     }
 }

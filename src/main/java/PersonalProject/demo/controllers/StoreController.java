@@ -7,13 +7,13 @@ import PersonalProject.demo.Dto.Request.CreateStoreRequest;
 import PersonalProject.demo.Dto.Request.UpdateStoreRequest;
 import PersonalProject.demo.Dto.Response.ApiResponse;
 import PersonalProject.demo.Dto.Response.StoreDto;
-import PersonalProject.demo.Enums.StoreStatus;
 import PersonalProject.demo.services.StoreService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,88 +30,96 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ApiResponse<StoreDto> createStore(
+    public ResponseEntity<ApiResponse<StoreDto>> createStore(
             @RequestBody CreateStoreRequest request,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         StoreDto storeDto = storeService.createStore(request, tenantId);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(storeDto)
                 .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<StoreDto> getStoreById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<StoreDto>> getStoreById(@PathVariable Long id) {
         StoreDto storeDto = storeService.getStoreById(id);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/admin")
-    public ApiResponse<List<StoreDto>> getAllStores(
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<StoreDto>>> getAllStores(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         List<StoreDto> stores = storeService.getAllStores(tenantId);
-        return ApiResponse.<List<StoreDto>>builder()
+        ApiResponse<List<StoreDto>> response = ApiResponse.<List<StoreDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(stores)
                 .build();
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<StoreDto> updateStore(
+    public ResponseEntity<ApiResponse<StoreDto>> updateStore(
             @PathVariable Long id,
             @RequestBody UpdateStoreRequest storeDto,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         StoreDto updatedStore = storeService.updateStore(id, storeDto, tenantId);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(updatedStore)
                 .build();
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteStore(
+    public ResponseEntity<ApiResponse<String>> deleteStore(
             @PathVariable Long id,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         storeService.deleteStore(id, tenantId);
-        return ApiResponse.<String>builder()
+        ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .result("Store deleted successfully")
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/employee")
-    public ApiResponse<StoreDto> getStoreByEmployee(
+    @GetMapping("/me/employee")
+    public ResponseEntity<ApiResponse<StoreDto>> getStoreByEmployee(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         StoreDto storeDto = storeService.getStoreByEmployee(tenantId);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)
                 .build();
+        return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/update_status/{id}")
-    public ApiResponse<StoreDto> updateStatusStore(
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<StoreDto>> updateStatusStore(
             @PathVariable Long id,
             @RequestBody UpdateStoreRequest storeStatus,
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         StoreDto updatedStore = storeService.moderateStore(id, storeStatus.getStoreStatus(), tenantId);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .message("Update store status complete")
                 .result(updatedStore)
                 .build();
+        return ResponseEntity.ok(response);
     }
     
-    @GetMapping("/store-manager")
-    public ApiResponse<StoreDto> getStoreByStoreManager(
+    @GetMapping("/me/store-manager")
+    public ResponseEntity<ApiResponse<StoreDto>> getStoreByStoreManager(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
         StoreDto storeDto = storeService.getStoreByStoreManager(tenantId);
-        return ApiResponse.<StoreDto>builder()
+        ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)
                 .build();
+        return ResponseEntity.ok(response);
     }
 }
