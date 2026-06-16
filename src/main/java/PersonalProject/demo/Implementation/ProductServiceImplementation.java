@@ -16,9 +16,11 @@ import PersonalProject.demo.mapper.ProductMapper;
 import PersonalProject.demo.models.Category;
 import PersonalProject.demo.models.Products;
 import PersonalProject.demo.models.Store;
+import PersonalProject.demo.models.StoreProduct;
 import PersonalProject.demo.repositories.CategoryRepositories;
 import PersonalProject.demo.repositories.ProductRepository;
 import PersonalProject.demo.repositories.StoreRepositories;
+import PersonalProject.demo.repositories.StoreProductRepository;
 import PersonalProject.demo.services.ProductService;
 import PersonalProject.demo.services.StoreService;
 import PersonalProject.demo.services.UserService;
@@ -37,14 +39,29 @@ public class ProductServiceImplementation implements ProductService {
     private final UserService userService;
     private final TenantUtil tenantUtil;
     private final CategoryRepositories categoryRepositories;
+    private final StoreProductRepository storeProductRepository;
 
     @Override
+    @Transactional
     public ProductDto createProduct(CreateProductRequest request, Long tenantId) {
         UserDto currentUser = tenantUtil.validateTenantAndGetUser(tenantId);
         List<Category> categories = categoryRepositories.findAllByCategoryIdsAndTenantId(request.getCategory_id(),
                 currentUser.getTenantId());
         Products products = productMapper.convertToModel(request, categories);
         Products savedProduct = productRepository.save(products);
+
+        if (request.getStoreId() != null) {
+            Store store = storeRepositories.findByIdAndTenantId(request.getStoreId(), tenantId);
+            if (store != null) {
+                StoreProduct storeProduct = StoreProduct.builder()
+                        .tenantId(tenantId)
+                        .store(store)
+                        .product(savedProduct)
+                        .build();
+                storeProductRepository.save(storeProduct);
+            }
+        }
+
         return productMapper.convertToDto(savedProduct, true);
     }
 
@@ -71,6 +88,17 @@ public class ProductServiceImplementation implements ProductService {
         if (store == null) {
             throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
         }
+        
+        // Ensure the product is associated with the store
+        if (!storeProductRepository.existsByStoreIdAndProductId(store.getId(), existingProduct.getId())) {
+            StoreProduct storeProduct = StoreProduct.builder()
+                    .tenantId(tenantId)
+                    .store(store)
+                    .product(existingProduct)
+                    .build();
+            storeProductRepository.save(storeProduct);
+        }
+
         Set<Long> cateOfStore = store.getCategories().stream().map(Category::getId)
                 .collect(Collectors.toSet());
 

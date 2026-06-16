@@ -53,4 +53,8 @@ public class Products extends AbstractTenantModel {
 
     @OneToMany(mappedBy = "products")
     List<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "product")
+    List<StoreProduct> storeProducts;
 }
+

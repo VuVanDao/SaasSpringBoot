@@ -27,10 +27,9 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
     @Query("SELECT DISTINCT p FROM Products p " +
-       "JOIN p.categories c " +
-       "JOIN c.stores s " +
-       "WHERE s.id = :storeId " +
-       "AND s.tenantId = :tenantId")
+       "JOIN p.storeProducts sp " +
+       "WHERE sp.store.id = :storeId " +
+       "AND sp.tenantId = :tenantId")
     List<Products> findAllWithStoreIdAndTenantId(@Param("storeId") Long storeId, @Param("tenantId") Long tenantId);
     // nó chỉ lấy các product có cate nằm trong bảng store_category, cùng với các điều kiện ở trên
     /*

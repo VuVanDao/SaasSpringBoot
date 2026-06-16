@@ -66,4 +66,7 @@ public class Store extends AbstractTenantModel {
 
     @OneToMany(mappedBy = "store")
     List<Employee> employees;
+
+    @OneToMany(mappedBy = "store")
+    List<StoreProduct> storeProducts;
 }
