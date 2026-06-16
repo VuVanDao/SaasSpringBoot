@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class TenantController {
     private final TenantService tenantService;
 
+    // DES: Tạo tenant (đối tượng kinh doanh) mới
     @PostMapping
     public ResponseEntity<ApiResponse<TenantDto>> createTenant(@Valid @RequestBody CreateTenantRequest request) {
         TenantDto tenantDto = tenantService.createTenant(request);
@@ -38,6 +39,7 @@ public class TenantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
+    // DES: Lấy danh sách tất cả các tenant
     @GetMapping
     public ResponseEntity<ApiResponse<List<TenantDto>>> getAllTenant() {
         ApiResponse<List<TenantDto>> response = ApiResponse.<List<TenantDto>>builder()
@@ -47,6 +49,7 @@ public class TenantController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin chi tiết của một tenant bằng ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TenantDto>> getTenantById(@PathVariable Long id) {
         ApiResponse<TenantDto> response = ApiResponse.<TenantDto>builder()
@@ -56,6 +59,7 @@ public class TenantController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật thông tin tenant
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TenantDto>> updateTenant(@PathVariable Long id, @Valid @RequestBody CreateTenantRequest entity) {
         ApiResponse<TenantDto> response = ApiResponse.<TenantDto>builder()
@@ -65,6 +69,7 @@ public class TenantController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Xóa tenant
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteTenant(@PathVariable Long id) {
         tenantService.deleteTenant(id);

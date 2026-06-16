@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class BranchController {
     private final BranchService branchService;
 
+    // DES: Tạo chi nhánh mới
     @PostMapping
     public ResponseEntity<ApiResponse<BranchDto>> createBranch(
             @RequestBody CreateBranchRequest request,
@@ -40,6 +41,7 @@ public class BranchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // DES: Lấy thông tin chi tiết của một chi nhánh bằng ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BranchDto>> getBranchById(
             @PathVariable Long id,
@@ -53,6 +55,7 @@ public class BranchController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy danh sách tất cả chi nhánh của tenant hiện tại
     @GetMapping
     public ResponseEntity<ApiResponse<List<BranchDto>>> getAllBranches(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -65,6 +68,7 @@ public class BranchController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật thông tin chi nhánh
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<BranchDto>> updateBranch(
             @PathVariable Long id,
@@ -79,6 +83,7 @@ public class BranchController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa chi nhánh
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteBranch(
             @PathVariable Long id,

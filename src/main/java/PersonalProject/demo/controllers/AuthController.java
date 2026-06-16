@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthController {
     private final AuthServiceImplementation authServiceImplementation;
 
+    // DES: Đăng ký tài khoản người dùng mới
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResponse<AuthResponse>> signUp(@Valid @RequestBody CreateUserRequest request) {
         AuthResponse res = this.authServiceImplementation.signUp(request);
@@ -34,6 +35,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // DES: Đăng nhập vào hệ thống
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse res = this.authServiceImplementation.login(request);
@@ -45,6 +47,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Refresh access token bằng refresh token
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         AuthResponse res = authServiceImplementation.refreshToken(request.getToken());

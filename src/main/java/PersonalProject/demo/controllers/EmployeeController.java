@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class EmployeeController {
     private final EmployeeService employeeService;
 
+    // DES: Tạo nhân viên mới
     @PostMapping("/employees")
     public ResponseEntity<ApiResponse<EmployeeDto>> createEmployee(
             @Valid @RequestBody CreateEmployeeRequest createRequest,
@@ -41,6 +42,7 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
+    // DES: Lấy danh sách nhân viên của một cửa hàng
     @GetMapping("/stores/{storeId}/employees")
     public ResponseEntity<ApiResponse<List<EmployeeDto>>> getEmployeesByStoreId(
             @PathVariable Long storeId,
@@ -53,6 +55,7 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin nhân viên bằng ID
     @GetMapping("/employees/{id}")
     public ResponseEntity<ApiResponse<EmployeeDto>> getEmployeeById(
             @PathVariable Long id,
@@ -65,6 +68,7 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin nhân viên bằng User ID
     @GetMapping("/users/{userId}/employees")
     public ResponseEntity<ApiResponse<EmployeeDto>> getEmployeeByUserId(
             @PathVariable Long userId,
@@ -77,6 +81,7 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy danh sách nhân viên của một chi nhánh
     @GetMapping("/branches/{branchId}/employees")
     public ResponseEntity<ApiResponse<List<EmployeeDto>>> getEmployeeByBranchId(
             @PathVariable Long branchId,
@@ -89,6 +94,7 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật thông tin nhân viên
     @PutMapping("/employees/{id}")
     public ResponseEntity<ApiResponse<EmployeeDto>> updateEmployee(
             @PathVariable Long id,
@@ -102,6 +108,7 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa nhân viên
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteEmployee(
             @PathVariable Long id,

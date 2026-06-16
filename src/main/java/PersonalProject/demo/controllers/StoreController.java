@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class StoreController {
     private final StoreService storeService;
 
+    // DES: Tạo store (cửa hàng) mới
     @PostMapping
     public ResponseEntity<ApiResponse<StoreDto>> createStore(
             @RequestBody CreateStoreRequest request,
@@ -41,6 +42,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // DES: Lấy thông tin chi tiết của store bằng ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StoreDto>> getStoreById(@PathVariable Long id) {
         StoreDto storeDto = storeService.getStoreById(id);
@@ -51,6 +53,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy danh sách tất cả store
     @GetMapping
     public ResponseEntity<ApiResponse<List<StoreDto>>> getAllStores(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -62,6 +65,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật thông tin store
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<StoreDto>> updateStore(
             @PathVariable Long id,
@@ -75,6 +79,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa store
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteStore(
             @PathVariable Long id,
@@ -87,6 +92,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin store của employee đăng nhập hiện tại
     @GetMapping("/me/employee")
     public ResponseEntity<ApiResponse<StoreDto>> getStoreByEmployee(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -98,6 +104,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật trạng thái store (moderate store)
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<StoreDto>> updateStatusStore(
             @PathVariable Long id,
@@ -112,6 +119,7 @@ public class StoreController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Lấy thông tin store của store manager đăng nhập hiện tại
     @GetMapping("/me/store-manager")
     public ResponseEntity<ApiResponse<StoreDto>> getStoreByStoreManager(
             @RequestHeader("${app.header-tenant}") Long tenantId) {

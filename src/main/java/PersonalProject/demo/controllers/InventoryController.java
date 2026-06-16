@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class InventoryController {
     private final InventoryService inventoryService;
 
+    // DES: Tạo kho hàng mới
     @PostMapping("/inventories")
     public ResponseEntity<ApiResponse<InventoryDto>> createInventory(
             @RequestBody CreateInventoryRequest request,
@@ -38,6 +39,7 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // DES: Cập nhật thông tin kho hàng
     @PutMapping("/inventories/{id}")
     public ResponseEntity<ApiResponse<InventoryDto>> updateInventory(
             @PathVariable Long id,
@@ -52,6 +54,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa kho hàng
     @DeleteMapping("/inventories/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteInventory(
             @PathVariable Long id,
@@ -64,6 +67,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin chi tiết của một kho hàng bằng ID
     @GetMapping("/inventories/{id}")
     public ResponseEntity<ApiResponse<InventoryDto>> getInventoryById(
             @PathVariable Long id,
@@ -77,6 +81,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy kho hàng chứa sản phẩm cụ thể
     @GetMapping("/products/{productId}/inventories")
     public ResponseEntity<ApiResponse<InventoryDto>> getProductInInventory(@PathVariable Long productId) {
         InventoryDto inventory = inventoryService.getProductInInventory(productId);
@@ -88,6 +93,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy tất cả kho hàng của chi nhánh cụ thể
     @GetMapping("/branches/{branchId}/inventories")
     public ResponseEntity<ApiResponse<List<InventoryDto>>> getAllInventoryByBranchId(
             @PathVariable Long branchId,
@@ -101,6 +107,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy danh sách tất cả kho hàng
     @GetMapping("/inventories")
     public ResponseEntity<ApiResponse<List<InventoryDto>>> getAllInventory() {
         List<InventoryDto> inventories = inventoryService.getAllInventory();

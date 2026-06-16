@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class CustomerController {
     private final CustomerService customerService;
 
+    // DES: Tạo khách hàng mới
     @PostMapping
     public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(
             @Valid @RequestBody CreateCustomerRequest entity,
@@ -41,6 +42,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
+    // DES: Lấy thông tin chi tiết khách hàng bằng ID
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerDto>> getCustomer(
             @PathVariable Long id,
@@ -53,6 +55,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Lấy danh sách tất cả khách hàng của tenant hiện tại
     @GetMapping
     public ResponseEntity<ApiResponse<List<CustomerDto>>> getAllCustomersByTenantId(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -64,6 +67,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Cập nhật thông tin khách hàng
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CustomerDto>> updateCustomer(
             @PathVariable Long id,
@@ -77,6 +81,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Xóa khách hàng
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCustomer(
             @PathVariable Long id,

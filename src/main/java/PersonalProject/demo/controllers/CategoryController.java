@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    // DES: Tạo danh mục sản phẩm mới
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryResponse>> createNewCategory(
             @RequestBody CreateCategoryRequest request,
@@ -39,6 +40,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // DES: Lấy danh sách tất cả danh mục của tenant hiện tại
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCate(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -50,6 +52,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy thông tin chi tiết của một danh mục
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(
             @PathVariable Long id,
@@ -63,6 +66,7 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa danh mục
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCategoryById(
             @PathVariable Long id,

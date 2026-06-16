@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ProductController {
     private final ProductService productService;
 
+    // DES: Tạo sản phẩm mới
     @PostMapping("/products")
     public ResponseEntity<ApiResponse<ProductDto>> createProduct(
             @RequestBody CreateProductRequest request,
@@ -43,6 +44,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
+    // DES: Lấy danh sách tất cả sản phẩm của tenant hiện tại
     @GetMapping("/products")
     public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProduct(
             @RequestHeader("${app.header-tenant}") Long tenantId) {
@@ -54,6 +56,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
     
+    // DES: Lấy thông tin chi tiết của một sản phẩm
     @GetMapping("/products/{id}")
     public ResponseEntity<ApiResponse<ProductDto>> getProductById(
             @PathVariable Long id,
@@ -66,6 +69,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Cập nhật thông tin sản phẩm
     @PutMapping("/products/{id}")
     public ResponseEntity<ApiResponse<ProductDto>> updateProduct(
             @PathVariable Long id,
@@ -79,6 +83,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Xóa sản phẩm
     @DeleteMapping("/products/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(
             @PathVariable Long id,
@@ -91,6 +96,7 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    // DES: Lấy tất cả sản phẩm hoặc tìm kiếm sản phẩm trong một store
     @GetMapping("/stores/{storeId}/products")
     public ResponseEntity<ApiResponse<List<ProductDto>>> getProductsByStoreId(
             @PathVariable Long storeId,
