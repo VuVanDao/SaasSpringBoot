@@ -14,6 +14,8 @@ import PersonalProject.demo.models.User;
 public interface UserRepository extends JpaRepository<User,Long>{
     User findByEmail(String email);
 
+    User findByEmailAndTenantId(String email, Long tenantId);
+
     User findByFullName(String fullName);
 
     @Query("SELECT u FROM User u  Where u.tenantId = :tenantId")

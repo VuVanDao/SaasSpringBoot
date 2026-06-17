@@ -33,8 +33,21 @@ public class CustomerServiceImplementation implements CustomerService {
     public CustomerDto createCustomer(CreateCustomerRequest createRequest, Long tenantId) {
         tenantUtil.validateTenant(tenantId);
         
+        // Check if user with this email already exists in the same tenant (e.g., an employee)
+        User user = userRepository.findByEmailAndTenantId(createRequest.getEmail(), tenantId);
+        if (user != null) {
+            // Check if they already have a customer profile
+            if (user.getCustomer() != null) {
+                throw new RuntimeException("Customer profile already exists for this email");
+            }
+            // Link existing user to new customer profile
+            Customer customer = customerMapper.toCustomer(createRequest, user, tenantId);
+            customer = customerRepository.save(customer);
+            return customerMapper.toCustomerDto(customer);
+        }
+        
         // 1. Create and save User first (with no password since it's a customer record)
-        User user = customerMapper.toUser(createRequest, tenantId);
+        user = customerMapper.toUser(createRequest, tenantId);
         user = userRepository.save(user);
         
         // 2. Create and save Customer linked to User

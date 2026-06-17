@@ -16,6 +16,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,6 +32,9 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
+@Table(name = "user", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"email", "tenant_id"})
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SuperBuilder
 // @Builder
@@ -38,7 +43,7 @@ import lombok.experimental.SuperBuilder;
 public class User extends AbstractTenantModel implements UserDetails{
     String fullName;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     @Email(message = "Email is not valid")
     String email;
 
