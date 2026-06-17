@@ -21,4 +21,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     Optional<Inventory> findByIdAndTenantId(Long id, Long tenant_id);
 
     List<Inventory> findAllByBranchIdAndTenantId(Long id, Long tenant_id);
+
+    List<Inventory> findAllByTenantId(Long tenantId);
 }

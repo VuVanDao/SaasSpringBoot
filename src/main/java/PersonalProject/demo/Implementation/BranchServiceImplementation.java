@@ -68,7 +68,7 @@ public class BranchServiceImplementation implements BranchService {
     @Override
     public BranchDto getBranchById(Long id, Long tenantId) {
         tenantUtil.validateTenant(tenantId);
-        Branch branch = branchRepository.findById(id)
+        Branch branch = branchRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
         return branchMapper.convertToDto(branch);
     }
@@ -76,7 +76,7 @@ public class BranchServiceImplementation implements BranchService {
     @Override
     public List<BranchDto> getAllBranches(Long tenantId) {
         tenantUtil.validateTenant(tenantId);
-        return branchRepository.findAll().stream()
+        return branchRepository.findAllByTenantId(tenantId).stream()
                 .map(branchMapper::convertToDto)
                 .toList();
     }

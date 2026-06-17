@@ -67,7 +67,8 @@ public class ProductServiceImplementation implements ProductService {
 
     @Override
     public List<ProductDto> getAllProducts(Long tenantId) {
-        return productRepository.findAllWithCategories().stream().map(product -> productMapper.convertToDto(product, false)).toList();
+        tenantUtil.validateTenant(tenantId);
+        return productRepository.findAllWithCategoriesAndTenantId(tenantId).stream().map(product -> productMapper.convertToDto(product, false)).toList();
     }
 
     @Override

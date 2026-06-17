@@ -138,8 +138,9 @@ public class InventoryServiceImplementation implements InventoryService {
 
     @Override
     @Transactional
-    public List<InventoryDto> getAllInventory() {
-        return inventoryRepository.findAll().stream()
+    public List<InventoryDto> getAllInventory(Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        return inventoryRepository.findAllByTenantId(tenantId).stream()
                 .map(inv -> InventoryDto.builder()
                         .id(inv.getId())
                         .inventoryName(inv.getInventoryName())

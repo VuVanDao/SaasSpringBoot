@@ -62,8 +62,12 @@ public class StoreServiceImplementation implements StoreService {
     }
 
     @Override
-    public StoreDto getStoreById(Long id) {
-        Store store = storeRepositories.findById(id).orElseThrow(() -> new ResourceNotFoundException((ErrorCode.Resource_not_found)));
+    public StoreDto getStoreById(Long id, Long tenantId) {
+        tenantUtil.validateTenant(tenantId);
+        Store store = storeRepositories.findByIdAndTenantId(id, tenantId);
+        if (store == null) {
+            throw new ResourceNotFoundException(ErrorCode.Resource_not_found);
+        }
         return storeMapper.convertToDto(store);
     }
 
@@ -71,7 +75,7 @@ public class StoreServiceImplementation implements StoreService {
     @Transactional
     public List<StoreDto> getAllStores(Long tenantId) {
         tenantUtil.validateTenant(tenantId);
-        List<Store> stores = storeRepositories.findAll();
+        List<Store> stores = storeRepositories.findAllByTenantId(tenantId);
         return stores.stream().map(storeMapper::convertToDto).toList();
     }
 

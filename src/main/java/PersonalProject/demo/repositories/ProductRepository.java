@@ -25,6 +25,9 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
     @Query("SELECT p FROM Products p LEFT JOIN FETCH p.categories")
     List<Products> findAllWithCategories();
 
+    @Query("SELECT DISTINCT p FROM Products p LEFT JOIN FETCH p.categories WHERE p.tenantId = :tenantId")
+    List<Products> findAllWithCategoriesAndTenantId(@Param("tenantId") Long tenantId);
+
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
     @Query("SELECT DISTINCT p FROM Products p " +
        "JOIN p.storeProducts sp " +
