@@ -125,8 +125,8 @@ public class CategoryImplementation implements CategoryService {
                         .build())
                 .toList();
         }
-        // Nếu là admin, lấy tất cả categories
-        return categoryRepositories.findAll().stream()
+        // Nếu là admin, lấy tất cả categories của tenant hiện tại hoặc default hệ thống
+        return categoryRepositories.findAllByTenantIdOrIsSystemDefaultTrue(tenantId).stream()
             .map(category -> CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
@@ -150,8 +150,8 @@ public class CategoryImplementation implements CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
 
          // Phân quyền truy cập
-         if (user.getRole() == UserRole.ROLE_STORE_MANAGER) {
-             // Store manager chỉ được truy cập category công khai hoặc category của chính store
+         if (user.getRole() != UserRole.ROLE_SUPER_ADMIN) {
+             // Chỉ có SUPER_ADMIN mới xem được các category private của tenant khác
              if (!existingCategory.getIsSystemDefault() &&
                      !existingCategory.getTenantId().equals(user.getTenantId())) {
                  throw new BadCredentialsException(ErrorCode.BadCredentialsException.getMessage());

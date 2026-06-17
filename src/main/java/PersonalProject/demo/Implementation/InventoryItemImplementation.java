@@ -12,6 +12,7 @@ import PersonalProject.demo.Dto.Response.InventoryItemInventory;
 import PersonalProject.demo.Dto.Response.InventoryItemProduct;
 import PersonalProject.demo.Enums.ErrorCode;
 import PersonalProject.demo.exception.ResourceNotFoundException;
+import PersonalProject.demo.exception.TenantException;
 import PersonalProject.demo.models.Inventory;
 import PersonalProject.demo.models.InventoryItem;
 import PersonalProject.demo.models.Products;
@@ -98,6 +99,9 @@ public class InventoryItemImplementation implements InventoryItemService {
 
         for (Long inventoryId : inventoryIds) {
             Inventory inventory = inventoryMap.get(inventoryId);
+            if (!inventory.getTenantId().equals(tenantId)) {
+                throw new TenantException(ErrorCode.Tenant_Exception);
+            }
             InventoryItem existingItem = inventoryItemRepository.findByInventoryIdAndProductId(inventoryId, productId);
 
             if (existingItem != null) {

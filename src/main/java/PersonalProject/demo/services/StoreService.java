@@ -13,7 +13,7 @@ public interface StoreService {
     @PreAuthorize("hasRole('ROLE_STORE_MANAGER')")
     StoreDto createStore(CreateStoreRequest storeDto, Long tenantId);
 
-    StoreDto getStoreById(Long id);
+    StoreDto getStoreById(Long id, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
     List<StoreDto> getAllStores(Long tenantId);

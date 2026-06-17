@@ -44,8 +44,10 @@ public class StoreController {
 
     // DES: Lấy thông tin chi tiết của store bằng ID
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<StoreDto>> getStoreById(@PathVariable Long id) {
-        StoreDto storeDto = storeService.getStoreById(id);
+    public ResponseEntity<ApiResponse<StoreDto>> getStoreById(
+            @PathVariable Long id,
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        StoreDto storeDto = storeService.getStoreById(id, tenantId);
         ApiResponse<StoreDto> response = ApiResponse.<StoreDto>builder()
                 .code(HttpStatus.OK.value())
                 .result(storeDto)

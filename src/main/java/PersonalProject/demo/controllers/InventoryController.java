@@ -109,8 +109,9 @@ public class InventoryController {
 
     // DES: Lấy danh sách tất cả kho hàng
     @GetMapping("/inventories")
-    public ResponseEntity<ApiResponse<List<InventoryDto>>> getAllInventory() {
-        List<InventoryDto> inventories = inventoryService.getAllInventory();
+    public ResponseEntity<ApiResponse<List<InventoryDto>>> getAllInventory(
+            @RequestHeader("${app.header-tenant}") Long tenantId) {
+        List<InventoryDto> inventories = inventoryService.getAllInventory(tenantId);
         ApiResponse<List<InventoryDto>> response = ApiResponse.<List<InventoryDto>>builder()
                 .code(HttpStatus.OK.value())
                 .result(inventories)

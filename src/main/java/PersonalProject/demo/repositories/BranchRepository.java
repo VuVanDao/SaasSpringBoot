@@ -12,4 +12,5 @@ import PersonalProject.demo.models.Branch;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findAllByIdInAndTenantId(List<Long> ids, Long tenantId);
     Optional<Branch> findByIdAndTenantId(Long id, Long tenantId);
+    List<Branch> findAllByTenantId(Long tenantId);
 }

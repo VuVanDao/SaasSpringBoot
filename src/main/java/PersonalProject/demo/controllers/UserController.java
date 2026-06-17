@@ -41,7 +41,9 @@ public class UserController {
 
     // (EM) DES: lấy user bằng id
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(
+                    @PathVariable Long id,
+                    @RequestHeader("${app.header-tenant}") Long tenantId) {
             UserDto userDto = userService.getUserById(id);
             ApiResponse<UserDto> response = ApiResponse.<UserDto>builder()
                             .code(HttpStatus.OK.value())

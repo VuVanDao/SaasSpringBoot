@@ -27,5 +27,5 @@ public interface InventoryService {
     List<InventoryDto> getAllInventoryByBranchId(Long branchId, Long tenantId);
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_STORE_MANAGER')")
-    List<InventoryDto> getAllInventory();
+    List<InventoryDto> getAllInventory(Long tenantId);
 }
