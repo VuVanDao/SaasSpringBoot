@@ -39,7 +39,7 @@ public class CustomerMapper {
                 .email(createRequest.getEmail())
                 .phone(createRequest.getPhone())
                 .avatar(createRequest.getAvatar())
-                .role(UserRole.ROLE_USER)
+                .role(UserRole.ROLE_CUSTOMER)
                 .tenantId(tenantId)
                 .build();
     }

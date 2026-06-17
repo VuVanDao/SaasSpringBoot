@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
 public class User extends AbstractTenantModel implements UserDetails{
     String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     @Email(message = "Email is not valid")
     String email;
 

@@ -22,7 +22,7 @@ public class userMapper {
     private final TenantRepository tenantRepository;
 
     public User convertToModel(CreateUserRequest request) {
-        UserRole role = UserRole.ROLE_USER;
+        UserRole role = UserRole.ROLE_CUSTOMER;
         if (request.getRole() != null) {
             role = request.getRole();
         }
