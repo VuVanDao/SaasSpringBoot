@@ -1,0 +1,2451 @@
+{
+  "info": {
+    "name": "SaasSpringBoot Complete API",
+    "description": "Postman collection generated automatically by parsing Java Controller and DTO source code",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth Management",
+      "item": [
+        {
+          "name": "POST - Đăng ký tài khoản người dùng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-up",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ],
+              "variable": []
+            },
+            "description": "Đăng ký tài khoản người dùng mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"password\": \"password123\",\n  \"role\": \"EMPLOYEE\",\n  \"lastLogin\": \"ACTIVE\",\n  \"tenantId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Đăng nhập vào hệ thống",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ],
+              "variable": []
+            },
+            "description": "Đăng nhập vào hệ thống",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Refresh access token bằng refresh token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ],
+              "variable": []
+            },
+            "description": "Refresh access token bằng refresh token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Branch Management",
+      "item": [
+        {
+          "name": "POST - Tạo chi nhánh mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches"
+              ],
+              "variable": []
+            },
+            "description": "Tạo chi nhánh mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"address\": \"string\",\n  \"phone\": \"0987654321\",\n  \"email\": \"user@example.com\",\n  \"workingDay\": \"string\",\n  \"openingTime\": \"ACTIVE\",\n  \"closingTime\": \"ACTIVE\",\n  \"managerId\": 1,\n  \"store_id\": 1,\n  \"tenant_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của một chi nhánh bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của một chi nhánh bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả chi nhánh của tenant hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả chi nhánh của tenant hiện tại"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin chi nhánh",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin chi nhánh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"address\": \"string\",\n  \"phone\": \"0987654321\",\n  \"email\": \"user@example.com\",\n  \"workingDay\": \"string\",\n  \"openingTime\": \"ACTIVE\",\n  \"closingTime\": \"ACTIVE\",\n  \"managerId\": 1,\n  \"store_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa chi nhánh",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa chi nhánh"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Category Management",
+      "item": [
+        {
+          "name": "POST - Tạo danh mục sản phẩm mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ],
+              "variable": []
+            },
+            "description": "Tạo danh mục sản phẩm mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"tenantId\": 1,\n  \"isSystemDefault\": true,\n  \"storeId\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả danh mục của tenant hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả danh mục của tenant hiện tại"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của một danh mục",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của một danh mục"
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa danh mục",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa danh mục"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer Management",
+      "item": [
+        {
+          "name": "POST - Tạo khách hàng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ],
+              "variable": []
+            },
+            "description": "Tạo khách hàng mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"avatar\": \"string\",\n  \"address\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết khách hàng bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết khách hàng bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả khách hàng của tenant hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả khách hàng của tenant hiện tại"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin khách hàng",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin khách hàng",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"avatar\": \"string\",\n  \"address\": \"string\",\n  \"tenantId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa khách hàng",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa khách hàng"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Employee Management",
+      "item": [
+        {
+          "name": "POST - Tạo nhân viên mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees"
+              ],
+              "variable": []
+            },
+            "description": "Tạo nhân viên mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"storeId\": 1,\n  \"branchId\": 1,\n  \"employeeRole\": \"EMPLOYEE\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"salary\": 1,\n  \"employeeCode\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách nhân viên của một cửa hàng",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:storeId/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":storeId",
+                "employees"
+              ],
+              "variable": [
+                {
+                  "key": "storeId",
+                  "value": "1",
+                  "description": "Path parameter storeId"
+                }
+              ]
+            },
+            "description": "Lấy danh sách nhân viên của một cửa hàng"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin nhân viên bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin nhân viên bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin nhân viên bằng User ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:userId/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":userId",
+                "employees"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1",
+                  "description": "Path parameter userId"
+                }
+              ]
+            },
+            "description": "Lấy thông tin nhân viên bằng User ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách nhân viên của một chi nhánh",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/:branchId/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                ":branchId",
+                "employees"
+              ],
+              "variable": [
+                {
+                  "key": "branchId",
+                  "value": "1",
+                  "description": "Path parameter branchId"
+                }
+              ]
+            },
+            "description": "Lấy danh sách nhân viên của một chi nhánh"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin nhân viên",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin nhân viên",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": 1,\n  \"employeeRole\": \"EMPLOYEE\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"salary\": 1,\n  \"employeeCode\": \"string\",\n  \"user_id\": 1,\n  \"store_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa nhân viên",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa nhân viên"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory Management",
+      "item": [
+        {
+          "name": "POST - Tạo kho hàng mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories"
+              ],
+              "variable": []
+            },
+            "description": "Tạo kho hàng mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": 1,\n  \"inventoryName\": \"string\",\n  \"tenant_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin kho hàng",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin kho hàng",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": 1,\n  \"inventoryName\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa kho hàng",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa kho hàng"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của một kho hàng bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của một kho hàng bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy kho hàng chứa sản phẩm cụ thể",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:productId/inventories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":productId",
+                "inventories"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "1",
+                  "description": "Path parameter productId"
+                }
+              ]
+            },
+            "description": "Lấy kho hàng chứa sản phẩm cụ thể"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy tất cả kho hàng của chi nhánh cụ thể",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/branches/:branchId/inventories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "branches",
+                ":branchId",
+                "inventories"
+              ],
+              "variable": [
+                {
+                  "key": "branchId",
+                  "value": "1",
+                  "description": "Path parameter branchId"
+                }
+              ]
+            },
+            "description": "Lấy tất cả kho hàng của chi nhánh cụ thể"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả kho hàng",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả kho hàng"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "InventoryItem Management",
+      "item": [
+        {
+          "name": "POST - Thêm nhiều sản phẩm vào kho hàng cùng một lúc",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories/:inventoryId/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories",
+                ":inventoryId",
+                "items"
+              ],
+              "variable": [
+                {
+                  "key": "inventoryId",
+                  "value": "1",
+                  "description": "Path parameter inventoryId"
+                }
+              ]
+            },
+            "description": "Thêm nhiều sản phẩm vào kho hàng cùng một lúc",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inventoryIds\": \"ACTIVE\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Thêm sản phẩm vào nhiều kho hàng",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:productId/inventories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":productId",
+                "inventories"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "1",
+                  "description": "Path parameter productId"
+                }
+              ]
+            },
+            "description": "Thêm sản phẩm vào nhiều kho hàng",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inventoryIds\": \"ACTIVE\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách các sản phẩm trong một kho hàng",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventories/:inventoryId/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventories",
+                ":inventoryId",
+                "products"
+              ],
+              "variable": [
+                {
+                  "key": "inventoryId",
+                  "value": "1",
+                  "description": "Path parameter inventoryId"
+                }
+              ]
+            },
+            "description": "Lấy danh sách các sản phẩm trong một kho hàng"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách các kho hàng chứa sản phẩm cụ thể",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:productId/inventories/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":productId",
+                "inventories",
+                "items"
+              ],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "1",
+                  "description": "Path parameter productId"
+                }
+              ]
+            },
+            "description": "Lấy danh sách các kho hàng chứa sản phẩm cụ thể"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Management",
+      "item": [
+        {
+          "name": "POST - Tạo sản phẩm mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "variable": []
+            },
+            "description": "Tạo sản phẩm mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"description\": \"string\",\n  \"brand\": \"string\",\n  \"image\": \"string\",\n  \"mrp\": 1,\n  \"sellingPrice\": 1,\n  \"storeId\": 1,\n  \"tenant_id\": 1,\n  \"category_id\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả sản phẩm của tenant hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả sản phẩm của tenant hiện tại"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của một sản phẩm",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của một sản phẩm"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin sản phẩm",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin sản phẩm",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"sku\": \"string\",\n  \"description\": \"string\",\n  \"brand\": \"string\",\n  \"image\": \"string\",\n  \"mrp\": 1,\n  \"sellingPrice\": 1,\n  \"categoryIds\": \"ACTIVE\",\n  \"store_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa sản phẩm",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa sản phẩm"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy tất cả sản phẩm hoặc tìm kiếm sản phẩm trong một store",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:storeId/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":storeId",
+                "products"
+              ],
+              "variable": [
+                {
+                  "key": "storeId",
+                  "value": "1",
+                  "description": "Path parameter storeId"
+                }
+              ]
+            },
+            "description": "Lấy tất cả sản phẩm hoặc tìm kiếm sản phẩm trong một store"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Store Management",
+      "item": [
+        {
+          "name": "POST - Tạo store (cửa hàng) mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores"
+              ],
+              "variable": []
+            },
+            "description": "Tạo store (cửa hàng) mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"string\",\n  \"description\": \"string\",\n  \"storeStatus\": \"ACTIVE\",\n  \"storeContact\": \"ACTIVE\",\n  \"branchIds\": \"ACTIVE\",\n  \"tenantId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của store bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của store bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả store",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả store"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin store",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin store",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"string\",\n  \"storeAdmin\": \"ACTIVE\",\n  \"description\": \"string\",\n  \"storeType\": \"string\",\n  \"storeStatus\": \"ACTIVE\",\n  \"storeContact\": \"ACTIVE\",\n  \"branchIds\": \"ACTIVE\",\n  \"categoryIds\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa store",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa store"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin store của employee đăng nhập hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/me/employee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                "me",
+                "employee"
+              ],
+              "variable": []
+            },
+            "description": "Lấy thông tin store của employee đăng nhập hiện tại"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH - Cập nhật trạng thái store (moderate store)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật trạng thái store (moderate store)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"string\",\n  \"storeAdmin\": \"ACTIVE\",\n  \"description\": \"string\",\n  \"storeType\": \"string\",\n  \"storeStatus\": \"ACTIVE\",\n  \"storeContact\": \"ACTIVE\",\n  \"branchIds\": \"ACTIVE\",\n  \"categoryIds\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin store của store manager đăng nhập hiện tại",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stores/me/store-manager",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stores",
+                "me",
+                "store-manager"
+              ],
+              "variable": []
+            },
+            "description": "Lấy thông tin store của store manager đăng nhập hiện tại"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tenant Management",
+      "item": [
+        {
+          "name": "POST - Tạo tenant (đối tượng kinh doanh) mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tenants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tenants"
+              ],
+              "variable": []
+            },
+            "description": "Tạo tenant (đối tượng kinh doanh) mới",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"domain\": \"string\",\n  \"status\": \"ACTIVE\",\n  \"expiryDate\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy danh sách tất cả các tenant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tenants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tenants"
+              ],
+              "variable": []
+            },
+            "description": "Lấy danh sách tất cả các tenant"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - Lấy thông tin chi tiết của một tenant bằng ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tenants/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tenants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Lấy thông tin chi tiết của một tenant bằng ID"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - Cập nhật thông tin tenant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tenants/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tenants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Cập nhật thông tin tenant",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\",\n  \"domain\": \"string\",\n  \"status\": \"ACTIVE\",\n  \"expiryDate\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE - Xóa tenant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tenants/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tenants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "Xóa tenant"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "GET - lấy profile, thông tin của user đang login",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ],
+              "variable": []
+            },
+            "description": "lấy profile, thông tin của user đang login"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - lấy user bằng id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "lấy user bằng id"
+          },
+          "response": []
+        },
+        {
+          "name": "GET - lấy danh sách user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "variable": []
+            },
+            "description": "lấy danh sách user"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT - update profile của user",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Path parameter id"
+                }
+              ]
+            },
+            "description": "update profile của user",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"string\",\n  \"email\": \"user@example.com\",\n  \"phone\": \"0987654321\",\n  \"role\": \"EMPLOYEE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET - lấy danh sách user của 1 tenant - hơi vô nghĩa, để đấy, tạm thời chưa có công dụng",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT Authentication Token",
+                "type": "text"
+              },
+              {
+                "key": "X-tenant-Id",
+                "value": "{{tenantId}}",
+                "description": "Tenant ID Header",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/store",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "store"
+              ],
+              "variable": []
+            },
+            "description": "lấy danh sách user của 1 tenant - hơi vô nghĩa, để đấy, tạm thời chưa có công dụng"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "tenantId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
