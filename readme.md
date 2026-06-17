@@ -52,7 +52,7 @@ Nếu bạn muốn tra cứu chi tiết từng endpoint (Input request body, Out
 
 ---
 
-### Kí hiệu (những kí tự trong đáu () )
+### Kí hiệu (những kí tự trong dáu () )
 
 - D : Deprecated - những tính năng, hàm, hoặc thư viện đã không còn phù hợp và không khuyến khích sử dụng trong phiên bản mới
 - EM: endpoint maintenance - các api endpoint đang trong quá trình bảo trì, không khuyến khích sử dụng
